@@ -35,12 +35,14 @@ class UserController extends Controller
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(8)],
+            'role'     => ['required', 'in:super_admin,admin,operator'],
         ]);
 
         User::create([
             'name'     => $validated['name'],
             'email'    => $validated['email'],
             'password' => Hash::make($validated['password']),
+            'role'     => $validated['role'],
         ]);
 
         return redirect()->route('users.index')
@@ -72,11 +74,13 @@ class UserController extends Controller
             'name'     => ['required', 'string', 'max:255'],
             'email'    => ['required', 'email', 'unique:users,email,' . $user->id],
             'password' => ['nullable', 'confirmed', Password::min(8)],
+            'role'     => ['required', 'in:super_admin,admin,operator'],
         ]);
 
         $data = [
             'name'  => $validated['name'],
             'email' => $validated['email'],
+            'role'  => $validated['role'],
         ];
 
         if (!empty($validated['password'])) {

@@ -67,12 +67,19 @@
                     <td class="text-center">
                         <div class="flex items-center justify-center gap-2">
                             <a href="{{ route('berita.edit', $item) }}" class="btn-edit" id="editBerita{{ $item->id }}">Edit</a>
+                            @if(Auth::user()->canDelete())
                             <form method="POST" action="{{ route('berita.destroy', $item) }}"
                                   onsubmit="return confirm('Yakin ingin menghapus berita ini?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn-danger" id="deleteBerita{{ $item->id }}">Hapus</button>
                             </form>
+                            @else
+                            <button type="button"
+                                onclick="alert('Akses Ditolak\n\nHanya Admin atau Super Admin yang dapat menghapus data.\nHubungi admin untuk menghapus berita ini.')"
+                                class="btn-danger opacity-60 cursor-not-allowed"
+                                id="deleteBerita{{ $item->id }}">Hapus</button>
+                            @endif
                         </div>
                     </td>
                 </tr>

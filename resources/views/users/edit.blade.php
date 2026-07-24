@@ -24,6 +24,14 @@
             <div>
                 <h3 class="text-base font-semibold text-gray-800">{{ $user->name }}</h3>
                 <p class="text-sm text-gray-400">{{ $user->email }}</p>
+                @php
+                    $roleStyle = match($user->role) {
+                        'super_admin' => 'background:#fef3c7; color:#92400e;',
+                        'admin'       => 'background:#ede9fe; color:#5b21b6;',
+                        default       => 'background:#f0fdf4; color:#166534;',
+                    };
+                @endphp
+                <span class="inline-block mt-1 text-xs font-semibold px-2.5 py-0.5 rounded-full" style="{{ $roleStyle }}">{{ $user->roleName() }}</span>
             </div>
         </div>
 
@@ -53,6 +61,16 @@
                 <input type="email" id="email" name="email" value="{{ old('email', $user->email) }}"
                        placeholder="contoh@email.com"
                        class="form-input" required>
+            </div>
+
+            <div>
+                <label for="role" class="form-label">Role <span class="text-red-500">*</span></label>
+                <select id="role" name="role" class="form-input" required>
+                    <option value="super_admin" {{ old('role', $user->role) === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
+                    <option value="admin"       {{ old('role', $user->role) === 'admin'       ? 'selected' : '' }}>Admin</option>
+                    <option value="operator"    {{ old('role', $user->role) === 'operator'    ? 'selected' : '' }}>Operator</option>
+                </select>
+                <p class="text-xs text-gray-400 mt-1.5">Super Admin: akses penuh · Admin: CRUD · Operator: tambah & edit saja</p>
             </div>
 
             <div class="bg-gray-50 rounded-xl p-4 border border-dashed border-gray-200">

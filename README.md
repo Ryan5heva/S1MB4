@@ -49,20 +49,27 @@ npm run dev
 
 Setelah menjalankan `php artisan migrate --seed`, akun berikut akan tersedia:
 
-| Nama              | Email              | Password     | Role          |
-|-------------------|--------------------|--------------|---------------|
-| Administrator SIMBA | admin@simba.test | `password123` | Administrator |
+| Nama               | Email                    | Password      | Role        |
+|--------------------|--------------------------|---------------|-------------|
+| Super Administrator | superadmin@simba.test   | `password123` | Super Admin |
+| Administrator       | admin@simba.test        | `password123` | Admin       |
+| Operator Satu      | operator1@simba.test     | `password123` | Operator    |
+| Operator Dua       | operator2@simba.test     | `password123` | Operator    |
+| Operator Tiga      | operator3@simba.test     | `password123` | Operator    |
+| Operator Empat     | operator4@simba.test     | `password123` | Operator    |
 
-> ⚠️ **Penting:** Segera ganti password default setelah login pertama kali di menu **Manajemen Pengguna**.
+> ⚠️ **Penting:** Segera ganti password default setelah login pertama kali di menu **Kelola Pengguna**.
 
 ---
 
 ## 🗂️ Fitur Utama
 
 - **Autentikasi** — Login & logout pengguna
-- **Manajemen Pengguna** — Tambah, edit, dan hapus akun pengguna
+- **Manajemen Pengguna** — Tambah, edit, dan hapus akun pengguna *(khusus Super Admin)*
 - **Berita / Informasi** — Kelola konten berita dan pengumuman
+- **Video** — Kelola data video
 - **Dashboard** — Ringkasan data dan statistik
+- **Sistem Role** — Kontrol akses berbasis role (Super Admin, Admin, Operator)
 
 ---
 
@@ -100,6 +107,10 @@ SIMBA/
 - Password disimpan dalam bentuk **hash** menggunakan `bcrypt`
 - Pengguna tidak dapat menghapus akun dirinya sendiri
 - Semua input divalidasi sebelum disimpan ke database
+- **Sistem Role** — 3 tingkatan akses:
+  - `Super Admin` — akses penuh termasuk kelola pengguna
+  - `Admin` — CRUD berita & video, tidak bisa kelola pengguna
+  - `Operator` — hanya dapat menambah & mengedit data (tidak bisa menghapus)
 
 ---
 

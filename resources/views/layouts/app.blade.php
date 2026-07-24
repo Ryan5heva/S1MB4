@@ -203,6 +203,7 @@
                 Kelola Video
             </a>
 
+            @if(Auth::user()->isSuperAdmin())
             <a href="{{ route('users.index') }}"
                class="sidebar-link {{ Request::routeIs('users.*') ? 'active' : '' }}">
                 <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -210,6 +211,7 @@
                 </svg>
                 Kelola Pengguna
             </a>
+            @endif
         </nav>
 
         {{-- User Info at Bottom --}}
@@ -221,6 +223,14 @@
                 <div class="flex-1 min-w-0">
                     <p class="text-white text-sm font-medium truncate">{{ Auth::user()->name }}</p>
                     <p class="text-white/50 text-xs truncate">{{ Auth::user()->email }}</p>
+                    @php
+                        $roleColor = match(Auth::user()->role) {
+                            'super_admin' => 'background: rgba(251,191,36,0.25); color: #fde68a;',
+                            'admin'       => 'background: rgba(99,102,241,0.25); color: #c7d2fe;',
+                            default       => 'background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.6);',
+                        };
+                    @endphp
+                    <span class="inline-block mt-1 text-xs font-semibold px-2 py-0.5 rounded-full" style="{{ $roleColor }}">{{ Auth::user()->roleName() }}</span>
                 </div>
             </div>
         </div>

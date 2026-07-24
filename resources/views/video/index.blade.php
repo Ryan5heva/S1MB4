@@ -45,11 +45,17 @@
                     <td class="px-6 py-4 text-sm font-medium text-center space-x-2">
                         <a href="{{ route('video.edit', $item->id) }}" class="inline-flex items-center px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg hover:bg-blue-100 transition-colors">Edit</a>
                         
+                        @if(Auth::user()->canDelete())
                         <form action="{{ route('video.destroy', $item->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Apakah Anda yakin ingin menghapus video ini?');">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors">Hapus</button>
                         </form>
+                        @else
+                        <button type="button"
+                            onclick="alert('Akses Ditolak\n\nHanya Admin atau Super Admin yang dapat menghapus data.\nHubungi admin untuk menghapus video ini.')"
+                            class="inline-flex items-center px-3 py-1.5 bg-red-50 text-red-400 rounded-lg opacity-60 cursor-not-allowed">Hapus</button>
+                        @endif
                     </td>
                 </tr>
                 @empty

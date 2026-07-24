@@ -38,12 +38,19 @@ Route::middleware('auth')->group(function () {
     // Berita Preview
     Route::get('/berita/{beritum}/preview', [BeritaController::class, 'preview'])->name('berita.preview');
 
-    // User CRUD
-    Route::resource('users', UserController::class);
-
     // Video CRUD
     Route::resource('video', VideoController::class);
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    /*
+    |--------------------------------------------------------------------------
+    | Super Admin Only Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::middleware('role:super_admin')->group(function () {
+        // User CRUD — hanya super_admin
+        Route::resource('users', UserController::class);
+    });
 });

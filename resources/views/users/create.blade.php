@@ -47,6 +47,17 @@
             </div>
 
             <div>
+                <label for="role" class="form-label">Role <span class="text-red-500">*</span></label>
+                <select id="role" name="role" class="form-input" required>
+                    <option value="" disabled {{ old('role') ? '' : 'selected' }}>-- Pilih Role --</option>
+                    <option value="super_admin" {{ old('role') === 'super_admin' ? 'selected' : '' }}>Super Admin</option>
+                    <option value="admin"       {{ old('role') === 'admin'       ? 'selected' : '' }}>Admin</option>
+                    <option value="operator"    {{ old('role') === 'operator'    ? 'selected' : '' }}>Operator</option>
+                </select>
+                <p class="text-xs text-gray-400 mt-1.5">Super Admin: akses penuh · Admin: CRUD · Operator: tambah & edit saja</p>
+            </div>
+
+            <div>
                 <label for="password" class="form-label">Password <span class="text-red-500">*</span></label>
                 <input type="password" id="password" name="password"
                        placeholder="Minimal 8 karakter..."

@@ -115,6 +115,12 @@ class BeritaController extends Controller
      */
     public function destroy(Berita $beritum)
     {
+        // Operator tidak dapat menghapus data
+        if (!auth()->user()->canDelete()) {
+            return redirect()->route('berita.index')
+                ->with('error', 'Aksi ditolak. Hanya Admin atau Super Admin yang dapat menghapus berita.');
+        }
+
         if ($beritum->gambar && Storage::disk('public')->exists($beritum->gambar)) {
             Storage::disk('public')->delete($beritum->gambar);
         }

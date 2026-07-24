@@ -65,6 +65,12 @@ class VideoController extends Controller
     // Menghapus data video dari database
     public function destroy(Video $video)
     {
+        // Operator tidak dapat menghapus data
+        if (!auth()->user()->canDelete()) {
+            return redirect()->route('video.index')
+                ->with('error', 'Aksi ditolak. Hanya Admin atau Super Admin yang dapat menghapus video.');
+        }
+
         $video->delete();
         return redirect()->route('video.index')->with('success', 'Video berhasil dihapus.');
     }

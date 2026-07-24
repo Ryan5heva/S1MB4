@@ -27,6 +27,7 @@
                     <th class="text-left w-8">#</th>
                     <th class="text-left">Pengguna</th>
                     <th class="text-left">Email</th>
+                    <th class="text-left">Role</th>
                     <th class="text-left">Bergabung</th>
                     <th class="text-center">Aksi</th>
                 </tr>
@@ -49,6 +50,18 @@
                         </div>
                     </td>
                     <td class="text-sm text-gray-600">{{ $user->email }}</td>
+                    <td>
+                        @php
+                            $roleStyle = match($user->role) {
+                                'super_admin' => 'background:#fef3c7; color:#92400e;',
+                                'admin'       => 'background:#ede9fe; color:#5b21b6;',
+                                default       => 'background:#f0fdf4; color:#166534;',
+                            };
+                        @endphp
+                        <span class="text-xs font-semibold px-2.5 py-1 rounded-full" style="{{ $roleStyle }}">
+                            {{ $user->roleName() }}
+                        </span>
+                    </td>
                     <td class="text-sm text-gray-500 whitespace-nowrap">{{ $user->created_at->format('d M Y') }}</td>
                     <td class="text-center">
                         <div class="flex items-center justify-center gap-2">
@@ -68,7 +81,7 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="text-center py-16 text-gray-400">
+                    <td colspan="6" class="text-center py-16 text-gray-400">
                         <svg class="w-12 h-12 mx-auto mb-3 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
                         </svg>
@@ -89,3 +102,4 @@
 </div>
 
 @endsection
+
