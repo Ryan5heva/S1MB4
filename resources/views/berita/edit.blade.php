@@ -41,16 +41,6 @@
                        class="form-input" required>
             </div>
 
-            {{-- Current Slug --}}
-            <div>
-                <label class="form-label">Slug Saat Ini</label>
-                <div class="flex items-center gap-2 px-3 py-2.5 bg-gray-50 border border-dashed border-gray-200 rounded-lg">
-                    <span class="text-sm text-gray-400">/berita/</span>
-                    <span id="slugPreview" class="text-sm text-gray-600 font-mono">{{ $berita->slug }}</span>
-                </div>
-                <p class="text-xs text-gray-400 mt-1.5">Slug akan diperbarui otomatis jika judul diubah.</p>
-            </div>
-
             {{-- Konten --}}
             <div>
                 <label for="konten" class="form-label">Konten Berita <span class="text-red-500">*</span></label>
@@ -114,25 +104,6 @@
 
 @push('scripts')
 <script>
-    // Slug preview update on title change
-    const judulInput = document.getElementById('judul');
-    const slugPreview = document.getElementById('slugPreview');
-    const originalSlug = '{{ $berita->slug }}';
-
-    function generateSlug(text) {
-        return text
-            .toLowerCase()
-            .trim()
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-');
-    }
-
-    judulInput.addEventListener('input', function() {
-        const slug = generateSlug(this.value);
-        slugPreview.textContent = slug || originalSlug;
-    });
-
     // Image preview
     const dropZone = document.getElementById('dropZone');
     const gambarInput = document.getElementById('gambar');

@@ -36,7 +36,7 @@
         }
     </style>
 </head>
-<body class="bg-gradient-radial min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('images/login-bg.jpg') }}');">
 
     {{-- Main Content --}}
     <main class="flex-1 flex items-center justify-center px-4 py-12">

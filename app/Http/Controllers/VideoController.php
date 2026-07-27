@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Video;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 
 class VideoController extends Controller
@@ -37,6 +38,8 @@ class VideoController extends Controller
             'url_video' => $request->url_video,
         ]);
 
+        ActivityLog::catat('Tambah Data', 'Menambahkan video "' . $request->judul_video . '".');
+
         return redirect()->route('video.index')->with('success', 'Video berhasil ditambahkan.');
     }
 
@@ -59,6 +62,8 @@ class VideoController extends Controller
             'url_video' => $request->url_video,
         ]);
 
+        ActivityLog::catat('Edit Data', 'Mengubah video "' . $request->judul_video . '".');
+
         return redirect()->route('video.index')->with('success', 'Video berhasil diperbarui.');
     }
 
@@ -70,6 +75,8 @@ class VideoController extends Controller
             return redirect()->route('video.index')
                 ->with('error', 'Aksi ditolak. Hanya Admin atau Super Admin yang dapat menghapus video.');
         }
+
+        ActivityLog::catat('Hapus Data', 'Menghapus video "' . $video->judul_video . '".');
 
         $video->delete();
         return redirect()->route('video.index')->with('success', 'Video berhasil dihapus.');

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Berita;
+use App\Models\ActivityLog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 
 class BeritaController extends Controller
 {
@@ -38,8 +38,6 @@ class BeritaController extends Controller
             'gambar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
         ]);
 
-        $slug = $this->generateUniqueSlug($validated['judul']);
-
         $gambarPath = null;
         if ($request->hasFile('gambar')) {
             $gambarPath = $request->file('gambar')->store('berita', 'public');
@@ -47,11 +45,12 @@ class BeritaController extends Controller
 
         Berita::create([
             'judul'   => $validated['judul'],
-            'slug'    => $slug,
             'konten'  => $validated['konten'],
             'gambar'  => $gambarPath,
             'user_id' => Auth::id(),
         ]);
+
+        ActivityLog::catat('Tambah Data', 'Menambahkan berita "' . $validated['judul'] . '".');
 
         return redirect()->route('berita.index')
             ->with('success', 'Berita berhasil ditambahkan.');
@@ -84,12 +83,6 @@ class BeritaController extends Controller
             'gambar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
         ]);
 
-        // Regenerate slug only if judul changed
-        $slug = $beritum->slug;
-        if ($beritum->judul !== $validated['judul']) {
-            $slug = $this->generateUniqueSlug($validated['judul'], $beritum->id);
-        }
-
         $gambarPath = $beritum->gambar;
         if ($request->hasFile('gambar')) {
             // Hapus gambar lama jika ada
@@ -101,10 +94,11 @@ class BeritaController extends Controller
 
         $beritum->update([
             'judul'  => $validated['judul'],
-            'slug'   => $slug,
             'konten' => $validated['konten'],
             'gambar' => $gambarPath,
         ]);
+
+        ActivityLog::catat('Edit Data', 'Mengubah berita "' . $validated['judul'] . '".');
 
         return redirect()->route('berita.index')
             ->with('success', 'Berita berhasil diperbarui.');
@@ -121,6 +115,8 @@ class BeritaController extends Controller
                 ->with('error', 'Aksi ditolak. Hanya Admin atau Super Admin yang dapat menghapus berita.');
         }
 
+        ActivityLog::catat('Hapus Data', 'Menghapus berita "' . $beritum->judul . '".');
+
         if ($beritum->gambar && Storage::disk('public')->exists($beritum->gambar)) {
             Storage::disk('public')->delete($beritum->gambar);
         }
@@ -129,29 +125,5 @@ class BeritaController extends Controller
 
         return redirect()->route('berita.index')
             ->with('success', 'Berita berhasil dihapus.');
-    }
-
-    /**
-     * Generate slug unik dari judul.
-     */
-    private function generateUniqueSlug(string $judul, ?int $ignoreId = null): string
-    {
-        $slug = Str::slug($judul);
-        $originalSlug = $slug;
-        $counter = 1;
-
-        while (true) {
-            $query = Berita::where('slug', $slug);
-            if ($ignoreId) {
-                $query->where('id', '!=', $ignoreId);
-            }
-            if (!$query->exists()) {
-                break;
-            }
-            $slug = $originalSlug . '-' . $counter;
-            $counter++;
-        }
-
-        return $slug;
     }
 }

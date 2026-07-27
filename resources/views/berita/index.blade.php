@@ -26,7 +26,7 @@
                 <tr>
                     <th class="text-left w-8">#</th>
                     <th class="text-left">Gambar</th>
-                    <th class="text-left">Judul & Slug</th>
+                    <th class="text-left">Judul</th>
                     <th class="text-left">Penulis</th>
                     <th class="text-left">Tanggal</th>
                     <th class="text-center">Aksi</th>
@@ -53,7 +53,6 @@
                         <p class="font-semibold text-gray-800 max-w-xs" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:280px;">
                             {{ $item->judul }}
                         </p>
-                        <p class="text-xs text-gray-400 mt-0.5 font-mono">/{{ $item->slug }}</p>
                     </td>
                     <td>
                         <div class="flex items-center gap-2">

@@ -38,16 +38,6 @@
                 <input type="text" id="judul" name="judul" value="{{ old('judul') }}"
                        placeholder="Masukkan judul berita..."
                        class="form-input" required>
-                <p class="text-xs text-gray-400 mt-1.5">Slug akan dibuat otomatis dari judul.</p>
-            </div>
-
-            {{-- Slug Preview --}}
-            <div>
-                <label class="form-label">Pratinjau Slug</label>
-                <div class="flex items-center gap-2 px-3 py-2.5 bg-gray-50 border border-dashed border-gray-200 rounded-lg">
-                    <span class="text-sm text-gray-400">/berita/</span>
-                    <span id="slugPreview" class="text-sm text-gray-600 font-mono italic">slug-akan-muncul-disini</span>
-                </div>
             </div>
 
             {{-- Konten --}}
@@ -92,24 +82,6 @@
 
 @push('scripts')
 <script>
-    // Auto-generate slug from title
-    const judulInput = document.getElementById('judul');
-    const slugPreview = document.getElementById('slugPreview');
-
-    function generateSlug(text) {
-        return text
-            .toLowerCase()
-            .trim()
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-');
-    }
-
-    judulInput.addEventListener('input', function() {
-        const slug = generateSlug(this.value);
-        slugPreview.textContent = slug || 'slug-akan-muncul-disini';
-    });
-
     // Image preview
     const dropZone = document.getElementById('dropZone');
     const gambarInput = document.getElementById('gambar');
