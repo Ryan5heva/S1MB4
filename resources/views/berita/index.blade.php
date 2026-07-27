@@ -65,6 +65,7 @@
                     <td class="text-sm text-gray-500 whitespace-nowrap">{{ $item->created_at->format('d M Y') }}</td>
                     <td class="text-center">
                         <div class="flex items-center justify-center gap-2">
+                            <a href="{{ route('berita.preview', $item) }}" target="_blank" class="btn-preview" id="previewBerita{{ $item->id }}">Preview</a>
                             <a href="{{ route('berita.edit', $item) }}" class="btn-edit" id="editBerita{{ $item->id }}">Edit</a>
                             @if(Auth::user()->canDelete())
                             <form method="POST" action="{{ route('berita.destroy', $item) }}"

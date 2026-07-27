@@ -65,6 +65,14 @@ class BeritaController extends Controller
     }
 
     /**
+     * Preview berita.
+     */
+    public function preview(Berita $beritum)
+    {
+        return view('berita.preview', ['berita' => $beritum]);
+    }
+
+    /**
      * Tampilkan form edit berita.
      */
     public function edit(Berita $beritum)

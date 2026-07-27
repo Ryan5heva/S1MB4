@@ -128,6 +128,20 @@
         .btn-edit:hover {
             background: #dbeafe;
         }
+        .btn-preview {
+            background: #f0fdfa;
+            color: #0d9488;
+            padding: 0.375rem 0.875rem;
+            border-radius: 0.375rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            border: 1px solid #ccfbf1;
+        }
+        .btn-preview:hover {
+            background: #ccfbf1;
+            color: #0f766e;
+        }
 
         /* Form inputs */
         .form-input {
