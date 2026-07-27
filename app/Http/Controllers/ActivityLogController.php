@@ -15,4 +15,16 @@ class ActivityLogController extends Controller
         $logs = ActivityLog::with('user')->latest()->paginate(15);
         return view('riwayat.index', compact('logs'));
     }
+
+    public function destroy(ActivityLog $activityLog)
+    {
+        if (!auth()->user()->isSuperAdmin()) {
+            abort(403, 'Hanya Super Admin yang dapat menghapus riwayat.');
+        }
+
+        $activityLog->delete();
+
+        return redirect()->route('riwayat.index')
+            ->with('success', 'Riwayat aktivitas berhasil dihapus.');
+    }
 }

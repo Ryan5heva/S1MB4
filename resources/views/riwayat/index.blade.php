@@ -15,6 +15,9 @@
                     <th class="text-left">Pengguna</th>
                     <th class="text-left">Aktivitas</th>
                     <th class="text-left">Keterangan</th>
+                    @if(auth()->user()->isSuperAdmin())
+                    <th class="text-center">Aksi</th>
+                    @endif
                 </tr>
             </thead>
             <tbody>
@@ -25,10 +28,19 @@
                     <td>{{ $log->user->name ?? 'Sistem' }} <span class="text-xs text-gray-400">({{ $log->user->roleName() ?? '-' }})</span></td>
                     <td>{{ $log->aktivitas }}</td>
                     <td class="text-sm text-gray-600">{{ $log->keterangan }}</td>
+                    @if(auth()->user()->isSuperAdmin())
+                    <td class="text-center">
+                        <form method="POST" action="{{ route('riwayat.destroy', $log) }}" onsubmit="return confirm('Yakin ingin menghapus riwayat ini?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn-danger">Hapus</button>
+                        </form>
+                    </td>
+                    @endif
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="5" class="text-center py-10 text-gray-400">Belum ada riwayat aktivitas.</td>
+                    <td colspan="{{ auth()->user()->isSuperAdmin() ? 6 : 5 }}" class="text-center py-10 text-gray-400">Belum ada riwayat aktivitas.</td>
                 </tr>
                 @endforelse
             </tbody>

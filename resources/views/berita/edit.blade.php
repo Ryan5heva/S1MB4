@@ -49,15 +49,6 @@
                           class="form-input resize-y" required>{{ old('konten', $berita->konten) }}</textarea>
             </div>
 
-            {{-- URL Video --}}
-            <div>
-                <label for="video_url" class="form-label">URL Video YouTube (Opsional)</label>
-                <input type="url" id="video_url" name="video_url" value="{{ old('video_url', $berita->video_url) }}"
-                       placeholder="Contoh: https://www.youtube.com/watch?v=xxxxx"
-                       class="form-input">
-                <p class="text-xs text-gray-400 mt-1.5">Masukkan tautan video jika berita ini menyertakan video.</p>
-            </div>
-
             {{-- Gambar --}}
             <div>
                 <label class="form-label">Gambar</label>
