@@ -69,6 +69,16 @@ class PpidInformasi extends Model
         'Prosedur Peringatan Dini dan Prosedur Evakuasi Keadaan Darurat',
     ];
 
+    /**
+     * Urutan kanonical seksi Informasi Setiap Saat.
+     * Digunakan untuk memastikan 3 tabel selalu tampil dalam urutan yang benar.
+     */
+    const KATEGORI_ORDER_SETIAP_SAAT = [
+        'Daftar Informasi Publik (DIP)',
+        'Laporan Survei Kepuasan Masyarakat (SKM)',
+        'Standar Pelayanan',
+    ];
+
     // =========================================================
     //  Relasi
     // =========================================================

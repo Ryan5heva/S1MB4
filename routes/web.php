@@ -9,6 +9,8 @@ use App\Http\Controllers\VideoController;
 use App\Http\Controllers\ActivityLogController;
 use App\Http\Controllers\PpidInformasiBerkalaController;
 use App\Http\Controllers\PpidInformasiSertaMertaController;
+use App\Http\Controllers\PpidInformasiSetiapSaatController;
+use App\Http\Controllers\PpidInformasiDikecualikanController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +67,18 @@ Route::middleware('auth')->group(function () {
         ->only(['index', 'edit', 'update'])
         ->names('ppid.serta_merta')
         ->parameters(['serta-merta' => 'ppid']);
+
+    // Informasi Setiap Saat (index, edit, update — semua perihal fixed)
+    Route::resource('ppid/setiap-saat', PpidInformasiSetiapSaatController::class)
+        ->only(['index', 'edit', 'update'])
+        ->names('ppid.setiap_saat')
+        ->parameters(['setiap-saat' => 'ppid']);
+
+    // Informasi Dikecualikan (index, edit, update — semua perihal fixed)
+    Route::resource('ppid/dikecualikan', PpidInformasiDikecualikanController::class)
+        ->only(['index', 'edit', 'update'])
+        ->names('ppid.dikecualikan')
+        ->parameters(['dikecualikan' => 'ppid']);
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

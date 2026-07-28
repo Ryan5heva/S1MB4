@@ -59,6 +59,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             PpidInformasiBerkalaSeeder::class,
             PpidInformasiSertaMertaSeeder::class,
+            PpidInformasiSetiapSaatSeeder::class,
+            PpidInformasiDikecualikanSeeder::class,
         ]);
     }
 }

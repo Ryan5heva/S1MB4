@@ -356,7 +356,9 @@
             // PPID — tambah variabel baru setiap menu PPID diimplementasikan
             $isPpidBerkala      = request()->routeIs('ppid.berkala.*');
             $isPpidSertaMerta   = request()->routeIs('ppid.serta_merta.*');
-            $isPpidActive       = $isPpidBerkala || $isPpidSertaMerta;
+            $isPpidSetiapSaat   = request()->routeIs('ppid.setiap_saat.*');
+            $isPpidDikecualikan = request()->routeIs('ppid.dikecualikan.*');
+            $isPpidActive       = $isPpidBerkala || $isPpidSertaMerta || $isPpidSetiapSaat || $isPpidDikecualikan;
         @endphp
 
         <nav class="flex-1 px-4 py-5 flex flex-col gap-1">
@@ -461,7 +463,7 @@
                 >
                     <div class="sidebar-submenu-inner">
 
-                        {{-- Informasi Berkala (aktif) --}}
+                        {{-- Informasi Berkala --}}
                         <a href="{{ route('ppid.berkala.index') }}"
                            class="sidebar-sublink {{ $isPpidBerkala ? 'active' : '' }}">
                             <i class="bi bi-calendar-check"></i>
@@ -475,19 +477,19 @@
                             <span>Serta Merta</span>
                         </a>
 
-                        {{-- Informasi Setiap Saat (coming soon) --}}
-                        <span class="sidebar-sublink" style="opacity:0.35; cursor:not-allowed;" title="Segera hadir">
+                        {{-- Informasi Setiap Saat --}}
+                        <a href="{{ route('ppid.setiap_saat.index') }}"
+                           class="sidebar-sublink {{ $isPpidSetiapSaat ? 'active' : '' }}">
                             <i class="bi bi-clock"></i>
-                            <span>Setiap Saat</span>
-                            <span style="margin-left:auto; font-size:0.6rem; background:rgba(255,255,255,0.15); padding:0.1rem 0.4rem; border-radius:9999px;">Soon</span>
-                        </span>
+                            <span>Informasi Setiap Saat</span>
+                        </a>
 
-                        {{-- Informasi Dikecualikan (coming soon) --}}
-                        <span class="sidebar-sublink" style="opacity:0.35; cursor:not-allowed;" title="Segera hadir">
+                        {{-- Informasi Dikecualikan --}}
+                        <a href="{{ route('ppid.dikecualikan.index') }}"
+                           class="sidebar-sublink {{ $isPpidDikecualikan ? 'active' : '' }}">
                             <i class="bi bi-lock"></i>
                             <span>Dikecualikan</span>
-                            <span style="margin-left:auto; font-size:0.6rem; background:rgba(255,255,255,0.15); padding:0.1rem 0.4rem; border-radius:9999px;">Soon</span>
-                        </span>
+                        </a>
 
                     </div>
                 </div>
