@@ -66,9 +66,7 @@
     }
     .quick-nav a:hover { background: #148F9A; color: white; }
 
-    /* ── Progress summary ── */
-    .progress-bar-inner { height: 6px; border-radius: 9999px; background: #148F9A; transition: width 0.4s; }
-    .progress-bar-bg    { height: 6px; border-radius: 9999px; background: #e2e8f0; overflow: hidden; }
+
 </style>
 @endpush
 
@@ -78,33 +76,9 @@
 <div class="flex items-center justify-between mb-5">
     <div>
         <h3 class="text-base font-semibold text-gray-800">Daftar Informasi Berkala</h3>
-        <p class="text-xs text-gray-400 mt-0.5">
-            Sesuai ketentuan UU No. 14/2008 — Nama Informasi bersifat tetap, admin hanya mengelola dokumen/tautan.
-        </p>
     </div>
 </div>
 
-{{-- Progress Overview --}}
-@php
-    $totalItems   = $sections->flatten()->count();
-    $filledItems  = $sections->flatten()->filter(fn($i) => $i->hasDokumen())->count();
-    $pct          = $totalItems > 0 ? round(($filledItems / $totalItems) * 100) : 0;
-@endphp
-<div class="bg-white rounded-xl p-4 mb-5 flex items-center gap-5" style="box-shadow:0 1px 3px rgba(0,0,0,0.06);">
-    <div class="flex-1">
-        <div class="flex items-center justify-between mb-1">
-            <span class="text-xs font-medium text-gray-600">Kelengkapan Dokumen</span>
-            <span class="text-xs font-semibold" style="color:#148F9A;">{{ $filledItems }} / {{ $totalItems }} item terisi</span>
-        </div>
-        <div class="progress-bar-bg">
-            <div class="progress-bar-inner" style="width:{{ $pct }}%"></div>
-        </div>
-    </div>
-    <div class="text-center flex-shrink-0">
-        <p class="text-2xl font-bold" style="color:#148F9A;">{{ $pct }}%</p>
-        <p class="text-xs text-gray-400">Terisi</p>
-    </div>
-</div>
 
 {{-- Quick Navigation --}}
 <div class="quick-nav">
