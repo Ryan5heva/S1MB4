@@ -9,10 +9,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    {{-- Bootstrap Icons CDN --}}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
         body { font-family: 'Inter', sans-serif; }
 
-        /* Sidebar */
+        /* ============================================
+           SIDEBAR — Base Link
+        ============================================ */
         .sidebar-link {
             display: flex;
             align-items: center;
@@ -24,6 +28,7 @@
             color: rgba(255,255,255,0.7);
             transition: all 0.2s ease;
             text-decoration: none;
+            cursor: pointer;
         }
         .sidebar-link:hover {
             background: rgba(255,255,255,0.12);
@@ -34,7 +39,146 @@
             color: #fff;
         }
 
-        /* Alert flash messages */
+        /* ============================================
+           SIDEBAR — Dropdown "Kelola"
+        ============================================ */
+
+        /* Tombol trigger dropdown */
+        .sidebar-group-trigger {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 1rem;
+            border-radius: 0.625rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.7);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            width: 100%;
+            background: none;
+            border: none;
+            text-align: left;
+        }
+        .sidebar-group-trigger:hover {
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+        }
+        /* State aktif (salah satu submenu sedang aktif) */
+        .sidebar-group-trigger.group-active {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+
+        /* Ikon panah — rotate saat terbuka */
+        .sidebar-arrow {
+            margin-left: auto;
+            font-size: 0.75rem;
+            transition: transform 0.25s ease;
+            flex-shrink: 0;
+        }
+        .sidebar-group-trigger[aria-expanded="true"] .sidebar-arrow {
+            transform: rotate(90deg);
+        }
+
+        /* Container submenu dengan animasi collapse */
+        .sidebar-submenu {
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s ease, opacity 0.25s ease;
+            opacity: 0;
+        }
+        .sidebar-submenu.submenu-open {
+            max-height: 400px;
+            opacity: 1;
+        }
+
+        /* Item submenu */
+        .sidebar-submenu-inner {
+            margin-top: 0.25rem;
+            padding-left: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.125rem;
+        }
+        .sidebar-sublink {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.5rem 0.875rem;
+            border-radius: 0.5rem;
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.6);
+            transition: all 0.2s ease;
+            text-decoration: none;
+            position: relative;
+        }
+        .sidebar-sublink::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 0;
+            background: rgba(255,255,255,0.5);
+            border-radius: 2px;
+            transition: height 0.2s ease;
+        }
+        .sidebar-sublink:hover {
+            background: rgba(255,255,255,0.1);
+            color: #fff;
+        }
+        .sidebar-sublink:hover::before {
+            height: 60%;
+        }
+        .sidebar-sublink.active {
+            background: rgba(255,255,255,0.15);
+            color: #fff;
+            font-weight: 600;
+        }
+        .sidebar-sublink.active::before {
+            height: 70%;
+            background: #fff;
+        }
+
+        /* ============================================
+           SIDEBAR — Logout Button
+        ============================================ */
+        .sidebar-logout-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.625rem 1rem;
+            border-radius: 0.625rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: rgba(255,255,255,0.6);
+            transition: all 0.2s ease;
+            cursor: pointer;
+            width: 100%;
+            background: none;
+            border: none;
+            text-align: left;
+        }
+        .sidebar-logout-btn:hover {
+            background: rgba(239,68,68,0.2);
+            color: #fca5a5;
+        }
+
+        /* ============================================
+           SIDEBAR — Divider
+        ============================================ */
+        .sidebar-divider {
+            border: none;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin: 0.5rem 0;
+        }
+
+        /* ============================================
+           ALERT — Flash Messages
+        ============================================ */
         .alert-success {
             background: #f0fdf4;
             border: 1px solid #bbf7d0;
@@ -46,7 +190,9 @@
             color: #991b1b;
         }
 
-        /* Table */
+        /* ============================================
+           TABLE
+        ============================================ */
         .data-table th {
             background: #f8fafc;
             font-size: 0.75rem;
@@ -69,7 +215,9 @@
             background: #f8fafc;
         }
 
-        /* Buttons */
+        /* ============================================
+           BUTTONS
+        ============================================ */
         .btn-primary {
             background: linear-gradient(135deg, #148F9A, #0d7a84);
             color: white;
@@ -143,7 +291,9 @@
             color: #0f766e;
         }
 
-        /* Form inputs */
+        /* ============================================
+           FORM INPUTS
+        ============================================ */
         .form-input {
             width: 100%;
             padding: 0.625rem 0.875rem;
@@ -188,57 +338,164 @@
             </div>
         </div>
 
-        {{-- Navigation --}}
-        <nav class="flex-1 px-4 py-5 space-y-1">
-            <p class="text-white/40 text-xs font-semibold uppercase tracking-widest px-1 mb-3">Menu Utama</p>
+        {{-- ===================================
+             NAVIGASI SIDEBAR
+        =================================== --}}
+        @php
+            /*
+             * Tentukan apakah salah satu submenu "Kelola" sedang aktif.
+             * Digunakan untuk membuka dropdown secara otomatis.
+             */
+            $isKelolaDanBerita  = request()->routeIs('berita.*');
+            $isKelolaVideo      = request()->routeIs('video.*');
+            $isKelolaUsers      = request()->routeIs('users.*');
+            $isKelolaRiwayat    = request()->routeIs('riwayat.*');
+            // Pengguna berdiri sendiri, tidak termasuk dalam dropdown Kelola
+            $isKelolaActive     = $isKelolaDanBerita || $isKelolaVideo || $isKelolaRiwayat;
 
+            // PPID — tambah variabel baru setiap menu PPID diimplementasikan
+            $isPpidBerkala      = request()->routeIs('ppid.berkala.*');
+            $isPpidSertaMerta   = request()->routeIs('ppid.serta_merta.*');
+            $isPpidActive       = $isPpidBerkala || $isPpidSertaMerta;
+        @endphp
+
+        <nav class="flex-1 px-4 py-5 flex flex-col gap-1">
+            <p class="text-white/40 text-xs font-semibold uppercase tracking-widest px-1 mb-2">Menu Utama</p>
+
+            {{-- ─── Dashboard ─── --}}
             <a href="{{ route('dashboard') }}"
-               class="sidebar-link {{ Request::routeIs('dashboard') ? 'active' : '' }}">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
-                </svg>
-                Dashboard
+               class="sidebar-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                <i class="bi bi-house" style="font-size: 1rem;"></i>
+                <span>Dashboard</span>
             </a>
 
-            <a href="{{ route('berita.index') }}"
-               class="sidebar-link {{ Request::routeIs('berita.*') ? 'active' : '' }}">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/>
-                </svg>
-                Kelola Berita
-            </a>
+            <hr class="sidebar-divider">
+            <p class="text-white/40 text-xs font-semibold uppercase tracking-widest px-1 mb-1 mt-1">Manajemen</p>
 
-            {{-- MENU BARU: Kelola Video --}}
-            <a href="{{ route('video.index') }}"
-               class="sidebar-link {{ Request::routeIs('video.*') ? 'active' : '' }}">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                </svg>
-                Kelola Video
-            </a>
+            {{-- ─── Dropdown: Kelola ─── --}}
+            <div>
+                {{-- Trigger --}}
+                <button
+                    type="button"
+                    id="sidebarKelolaTrigger"
+                    aria-expanded="{{ $isKelolaActive ? 'true' : 'false' }}"
+                    aria-controls="sidebarKelolaMenu"
+                    onclick="toggleSidebarGroup(this)"
+                    class="sidebar-group-trigger {{ $isKelolaActive ? 'group-active' : '' }}"
+                >
+                    <i class="bi bi-folder" style="font-size: 1rem;"></i>
+                    <span>Kelola</span>
+                    <i class="bi bi-chevron-right sidebar-arrow"></i>
+                </button>
 
-            @if(!Auth::user()->isOperator())
-            <a href="{{ route('riwayat.index') }}"
-               class="sidebar-link {{ Request::routeIs('riwayat.*') ? 'active' : '' }}">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                </svg>
-                Riwayat Aktivitas
-            </a>
-            @endif
+                {{-- Submenu --}}
+                <div
+                    id="sidebarKelolaMenu"
+                    class="sidebar-submenu {{ $isKelolaActive ? 'submenu-open' : '' }}"
+                    role="region"
+                    aria-labelledby="sidebarKelolaTrigger"
+                >
+                    <div class="sidebar-submenu-inner">
 
+                        {{-- Berita (semua role) --}}
+                        <a href="{{ route('berita.index') }}"
+                           class="sidebar-sublink {{ $isKelolaDanBerita ? 'active' : '' }}">
+                            <i class="bi bi-newspaper"></i>
+                            <span>Berita</span>
+                        </a>
+
+                        {{-- Video (semua role) --}}
+                        <a href="{{ route('video.index') }}"
+                           class="sidebar-sublink {{ $isKelolaVideo ? 'active' : '' }}">
+                            <i class="bi bi-camera-video"></i>
+                            <span>Video</span>
+                        </a>
+
+                        {{-- Riwayat Aktivitas (non-operator) --}}
+                        @if(!Auth::user()->isOperator())
+                        <a href="{{ route('riwayat.index') }}"
+                           class="sidebar-sublink {{ $isKelolaRiwayat ? 'active' : '' }}">
+                            <i class="bi bi-clock-history"></i>
+                            <span>Riwayat Aktivitas</span>
+                        </a>
+                        @endif
+
+                    </div>
+                </div>
+            </div>
+
+            {{-- ─── Pengguna (standalone, super admin saja) ─── --}}
             @if(Auth::user()->isSuperAdmin())
             <a href="{{ route('users.index') }}"
-               class="sidebar-link {{ Request::routeIs('users.*') ? 'active' : '' }}">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-                </svg>
-                Kelola Pengguna
+               class="sidebar-link {{ $isKelolaUsers ? 'active' : '' }}">
+                <i class="bi bi-people" style="font-size: 1rem;"></i>
+                <span>Pengguna</span>
             </a>
             @endif
+
+            <hr class="sidebar-divider">
+            <p class="text-white/40 text-xs font-semibold uppercase tracking-widest px-1 mb-1 mt-1">PPID</p>
+
+            {{-- ─── Dropdown: PPID ─── --}}
+            <div>
+                {{-- Trigger --}}
+                <button
+                    type="button"
+                    id="sidebarPpidTrigger"
+                    aria-expanded="{{ $isPpidActive ? 'true' : 'false' }}"
+                    aria-controls="sidebarPpidMenu"
+                    onclick="toggleSidebarGroup(this)"
+                    class="sidebar-group-trigger {{ $isPpidActive ? 'group-active' : '' }}"
+                >
+                    <i class="bi bi-shield-check" style="font-size: 1rem;"></i>
+                    <span>PPID</span>
+                    <i class="bi bi-chevron-right sidebar-arrow"></i>
+                </button>
+
+                {{-- Submenu PPID --}}
+                <div
+                    id="sidebarPpidMenu"
+                    class="sidebar-submenu {{ $isPpidActive ? 'submenu-open' : '' }}"
+                    role="region"
+                    aria-labelledby="sidebarPpidTrigger"
+                >
+                    <div class="sidebar-submenu-inner">
+
+                        {{-- Informasi Berkala (aktif) --}}
+                        <a href="{{ route('ppid.berkala.index') }}"
+                           class="sidebar-sublink {{ $isPpidBerkala ? 'active' : '' }}">
+                            <i class="bi bi-calendar-check"></i>
+                            <span>Informasi Berkala</span>
+                        </a>
+
+                        {{-- Informasi Serta Merta --}}
+                        <a href="{{ route('ppid.serta_merta.index') }}"
+                           class="sidebar-sublink {{ $isPpidSertaMerta ? 'active' : '' }}">
+                            <i class="bi bi-lightning-charge"></i>
+                            <span>Serta Merta</span>
+                        </a>
+
+                        {{-- Informasi Setiap Saat (coming soon) --}}
+                        <span class="sidebar-sublink" style="opacity:0.35; cursor:not-allowed;" title="Segera hadir">
+                            <i class="bi bi-clock"></i>
+                            <span>Setiap Saat</span>
+                            <span style="margin-left:auto; font-size:0.6rem; background:rgba(255,255,255,0.15); padding:0.1rem 0.4rem; border-radius:9999px;">Soon</span>
+                        </span>
+
+                        {{-- Informasi Dikecualikan (coming soon) --}}
+                        <span class="sidebar-sublink" style="opacity:0.35; cursor:not-allowed;" title="Segera hadir">
+                            <i class="bi bi-lock"></i>
+                            <span>Dikecualikan</span>
+                            <span style="margin-left:auto; font-size:0.6rem; background:rgba(255,255,255,0.15); padding:0.1rem 0.4rem; border-radius:9999px;">Soon</span>
+                        </span>
+
+                    </div>
+                </div>
+            </div>
+
         </nav>
 
-        {{-- User Info at Bottom --}}
+        {{-- ─── User Info ─── --}}
         <div class="px-4 py-4 border-t border-white/10">
             <div class="flex items-center gap-3 px-2 py-2 rounded-xl bg-white/10">
                 <div class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center text-white text-sm font-semibold flex-shrink-0">
@@ -325,6 +582,37 @@
     {{-- ======= END MAIN CONTENT ======= --}}
 
 </div>
+
+{{-- ============================================
+     SIDEBAR DROPDOWN — Vanilla JS (no jQuery)
+============================================ --}}
+<script>
+    /**
+     * Toggle expand/collapse grup sidebar.
+     * Dipanggil via onclick pada tombol trigger.
+     *
+     * @param {HTMLElement} trigger - Elemen <button> yang diklik
+     */
+    function toggleSidebarGroup(trigger) {
+        const isExpanded = trigger.getAttribute('aria-expanded') === 'true';
+        const menuId     = trigger.getAttribute('aria-controls');
+        const menu       = document.getElementById(menuId);
+
+        if (!menu) return;
+
+        if (isExpanded) {
+            // ── Tutup ──
+            trigger.setAttribute('aria-expanded', 'false');
+            trigger.classList.remove('group-active');
+            menu.classList.remove('submenu-open');
+        } else {
+            // ── Buka ──
+            trigger.setAttribute('aria-expanded', 'true');
+            trigger.classList.add('group-active');
+            menu.classList.add('submenu-open');
+        }
+    }
+</script>
 
 @stack('scripts')
 </body>

@@ -54,5 +54,11 @@ class DatabaseSeeder extends Seeder
                 ]
             );
         }
+
+        // ─── PPID Seeders ───
+        $this->call([
+            PpidInformasiBerkalaSeeder::class,
+            PpidInformasiSertaMertaSeeder::class,
+        ]);
     }
 }

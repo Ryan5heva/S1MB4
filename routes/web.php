@@ -7,6 +7,8 @@ use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VideoController;
 use App\Http\Controllers\ActivityLogController;
+use App\Http\Controllers\PpidInformasiBerkalaController;
+use App\Http\Controllers\PpidInformasiSertaMertaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +50,21 @@ Route::middleware('auth')->group(function () {
     // Riwayat Aktivitas
     Route::get('/riwayat', [ActivityLogController::class, 'index'])->name('riwayat.index');
     Route::delete('/riwayat/{activityLog}', [ActivityLogController::class, 'destroy'])->name('riwayat.destroy');
+
+    // -------------------------------------------------------------------------
+    // PPID — Pengelolaan Informasi Publik
+    // -------------------------------------------------------------------------
+
+    // Informasi Berkala
+    Route::resource('ppid/berkala', PpidInformasiBerkalaController::class)
+        ->names('ppid.berkala')
+        ->parameters(['berkala' => 'ppid']);
+
+    // Informasi Serta Merta (index, edit, update — semua perihal fixed)
+    Route::resource('ppid/serta-merta', PpidInformasiSertaMertaController::class)
+        ->only(['index', 'edit', 'update'])
+        ->names('ppid.serta_merta')
+        ->parameters(['serta-merta' => 'ppid']);
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
