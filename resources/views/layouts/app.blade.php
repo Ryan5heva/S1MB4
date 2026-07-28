@@ -318,12 +318,12 @@
     </style>
     @stack('styles')
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-gray-50 h-screen overflow-hidden">
 
-<div class="flex min-h-screen">
+<div class="flex h-screen">
 
     {{-- ======= SIDEBAR ======= --}}
-    <aside class="w-64 flex-shrink-0 flex flex-col" style="background: linear-gradient(180deg, #148F9A 0%, #0d7a84 50%, #0a6870 100%);">
+    <aside class="w-64 flex-shrink-0 flex flex-col h-screen overflow-y-auto" style="background: linear-gradient(180deg, #148F9A 0%, #0d7a84 50%, #0a6870 100%);">
 
         {{-- Logo --}}
         <div class="flex items-center gap-3 px-6 py-5 border-b border-white/10">
@@ -521,10 +521,10 @@
     {{-- ======= END SIDEBAR ======= --}}
 
     {{-- ======= MAIN CONTENT ======= --}}
-    <div class="flex-1 flex flex-col min-w-0">
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
 
         {{-- Top Bar --}}
-        <header class="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between sticky top-0 z-10" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+        <header class="bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between flex-shrink-0" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
             <div>
                 <h2 class="text-gray-800 font-semibold text-base">@yield('page-title', 'Dashboard')</h2>
                 <p class="text-gray-400 text-xs mt-0.5">@yield('page-subtitle', 'Panel Administrasi SIMBA')</p>
@@ -544,41 +544,47 @@
             </div>
         </header>
 
-        {{-- Flash Messages --}}
-        <div class="px-6 pt-4">
-            @if(session('success'))
-                <div class="alert-success rounded-lg px-4 py-3 flex items-center gap-3 mb-0" id="flashAlert">
-                    <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                    <p class="text-sm font-medium">{{ session('success') }}</p>
-                    <button onclick="this.parentElement.remove()" class="ml-auto text-green-400 hover:text-green-600">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-                    </button>
-                </div>
-            @endif
-            @if(session('error'))
-                <div class="alert-error rounded-lg px-4 py-3 flex items-center gap-3 mb-0" id="flashAlert">
-                    <svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                    </svg>
-                    <p class="text-sm font-medium">{{ session('error') }}</p>
-                    <button onclick="this.parentElement.remove()" class="ml-auto text-red-400 hover:text-red-600">
-                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
-                    </button>
-                </div>
-            @endif
+        {{-- Scrollable area: Flash + Main + Footer --}}
+        <div class="flex-1 overflow-y-auto flex flex-col">
+
+            {{-- Flash Messages --}}
+            <div class="px-6 pt-4">
+                @if(session('success'))
+                    <div class="alert-success rounded-lg px-4 py-3 flex items-center gap-3 mb-0" id="flashAlert">
+                        <svg class="w-5 h-5 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        <p class="text-sm font-medium">{{ session('success') }}</p>
+                        <button onclick="this.parentElement.remove()" class="ml-auto text-green-400 hover:text-green-600">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                        </button>
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div class="alert-error rounded-lg px-4 py-3 flex items-center gap-3 mb-0" id="flashAlert">
+                        <svg class="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
+                        </svg>
+                        <p class="text-sm font-medium">{{ session('error') }}</p>
+                        <button onclick="this.parentElement.remove()" class="ml-auto text-red-400 hover:text-red-600">
+                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
+                        </button>
+                    </div>
+                @endif
+            </div>
+
+            {{-- Page Content --}}
+            <main class="flex-1 p-6">
+                @yield('content')
+            </main>
+
+            {{-- Footer --}}
+            <footer class="bg-white border-t border-gray-100 px-6 py-3 text-center">
+                <p class="text-xs text-gray-400">© 2026 SIMBA (Sistem Informasi Manajemen Bakorwil). All rights reserved.</p>
+            </footer>
+
         </div>
-
-        {{-- Page Content --}}
-        <main class="flex-1 p-6">
-            @yield('content')
-        </main>
-
-        {{-- Footer --}}
-        <footer class="bg-white border-t border-gray-100 px-6 py-3 text-center">
-            <p class="text-xs text-gray-400">© 2026 SIMBA (Sistem Informasi Manajemen Bakorwil). All rights reserved.</p>
-        </footer>
+        {{-- ======= END Scrollable area ======= --}}
 
     </div>
     {{-- ======= END MAIN CONTENT ======= --}}
