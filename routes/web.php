@@ -12,6 +12,7 @@ use App\Http\Controllers\PpidInformasiSertaMertaController;
 use App\Http\Controllers\PpidInformasiSetiapSaatController;
 use App\Http\Controllers\PpidInformasiDikecualikanController;
 use App\Http\Controllers\PpidLaporanAksesInformasiController;
+use App\Http\Controllers\SakipRbController;
 
 /*
 |--------------------------------------------------------------------------
@@ -86,6 +87,12 @@ Route::middleware('auth')->group(function () {
         ->only(['index', 'edit', 'update'])
         ->names('ppid.laporan_akses_informasi')
         ->parameters(['laporan-akses-informasi' => 'ppid']);
+
+    // -------------------------------------------------------------------------
+    // SAKIP-RB — Sistem Akuntabilitas Kinerja Instansi Pemerintah & Reformasi Birokrasi
+    // -------------------------------------------------------------------------
+    Route::resource('sakip-rb', SakipRbController::class)
+        ->parameters(['sakip-rb' => 'sakipRb']);
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

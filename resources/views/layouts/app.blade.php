@@ -360,6 +360,9 @@
             $isPpidDikecualikan = request()->routeIs('ppid.dikecualikan.*');
             $isPpidLaporanAkses = request()->routeIs('ppid.laporan_akses_informasi.*');
             $isPpidActive       = $isPpidBerkala || $isPpidSertaMerta || $isPpidSetiapSaat || $isPpidDikecualikan || $isPpidLaporanAkses;
+
+            // SAKIP-RB
+            $isSakipRb = request()->routeIs('sakip-rb.*');
         @endphp
 
         <nav class="flex-1 px-4 py-5 flex flex-col gap-1">
@@ -502,6 +505,16 @@
                     </div>
                 </div>
             </div>
+
+            {{-- ─── SAKIP-RB (standalone) ─── --}}
+            <hr class="sidebar-divider">
+            <p class="text-white/40 text-xs font-semibold uppercase tracking-widest px-1 mb-1 mt-1">SAKIP-RB</p>
+            <a href="{{ route('sakip-rb.index') }}"
+               class="sidebar-link {{ $isSakipRb ? 'active' : '' }}"
+               id="sidebarSakipRb">
+                <i class="bi bi-clipboard-check" style="font-size: 1rem;"></i>
+                <span>SAKIP-RB</span>
+            </a>
 
         </nav>
 
