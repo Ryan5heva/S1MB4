@@ -358,7 +358,8 @@
             $isPpidSertaMerta   = request()->routeIs('ppid.serta_merta.*');
             $isPpidSetiapSaat   = request()->routeIs('ppid.setiap_saat.*');
             $isPpidDikecualikan = request()->routeIs('ppid.dikecualikan.*');
-            $isPpidActive       = $isPpidBerkala || $isPpidSertaMerta || $isPpidSetiapSaat || $isPpidDikecualikan;
+            $isPpidLaporanAkses = request()->routeIs('ppid.laporan_akses_informasi.*');
+            $isPpidActive       = $isPpidBerkala || $isPpidSertaMerta || $isPpidSetiapSaat || $isPpidDikecualikan || $isPpidLaporanAkses;
         @endphp
 
         <nav class="flex-1 px-4 py-5 flex flex-col gap-1">
@@ -489,6 +490,13 @@
                            class="sidebar-sublink {{ $isPpidDikecualikan ? 'active' : '' }}">
                             <i class="bi bi-lock"></i>
                             <span>Dikecualikan</span>
+                        </a>
+
+                        {{-- Laporan Akses Informasi --}}
+                        <a href="{{ route('ppid.laporan_akses_informasi.index') }}"
+                           class="sidebar-sublink {{ $isPpidLaporanAkses ? 'active' : '' }}">
+                            <i class="bi bi-bar-chart-line"></i>
+                            <span>Laporan Akses</span>
                         </a>
 
                     </div>

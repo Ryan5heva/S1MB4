@@ -46,10 +46,11 @@ class PpidInformasi extends Model
      * Label untuk setiap jenis menu PPID.
      */
     const JENIS_MENU = [
-        'berkala'      => 'Informasi Berkala',
-        'serta_merta'  => 'Informasi Serta Merta',
-        'setiap_saat'  => 'Informasi Setiap Saat',
-        'dikecualikan' => 'Informasi Dikecualikan',
+        'berkala'                  => 'Informasi Berkala',
+        'serta_merta'              => 'Informasi Serta Merta',
+        'setiap_saat'              => 'Informasi Setiap Saat',
+        'dikecualikan'             => 'Informasi Dikecualikan',
+        'laporan_akses_informasi'  => 'Laporan Akses Informasi',
     ];
 
     /**
@@ -113,6 +114,11 @@ class PpidInformasi extends Model
     public function scopeDikecualikan(Builder $query): Builder
     {
         return $query->where('jenis_menu', 'dikecualikan');
+    }
+
+    public function scopeLaporanAksesInformasi(Builder $query): Builder
+    {
+        return $query->where('jenis_menu', 'laporan_akses_informasi');
     }
 
     public function scopePublished(Builder $query): Builder

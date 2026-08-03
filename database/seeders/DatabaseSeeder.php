@@ -61,6 +61,7 @@ class DatabaseSeeder extends Seeder
             PpidInformasiSertaMertaSeeder::class,
             PpidInformasiSetiapSaatSeeder::class,
             PpidInformasiDikecualikanSeeder::class,
+            PpidLaporanAksesInformasiSeeder::class,
         ]);
     }
 }

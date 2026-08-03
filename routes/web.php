@@ -11,6 +11,7 @@ use App\Http\Controllers\PpidInformasiBerkalaController;
 use App\Http\Controllers\PpidInformasiSertaMertaController;
 use App\Http\Controllers\PpidInformasiSetiapSaatController;
 use App\Http\Controllers\PpidInformasiDikecualikanController;
+use App\Http\Controllers\PpidLaporanAksesInformasiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,6 +80,12 @@ Route::middleware('auth')->group(function () {
         ->only(['index', 'edit', 'update'])
         ->names('ppid.dikecualikan')
         ->parameters(['dikecualikan' => 'ppid']);
+
+    // Laporan Akses Informasi (index, edit, update — semua perihal fixed)
+    Route::resource('ppid/laporan-akses-informasi', PpidLaporanAksesInformasiController::class)
+        ->only(['index', 'edit', 'update'])
+        ->names('ppid.laporan_akses_informasi')
+        ->parameters(['laporan-akses-informasi' => 'ppid']);
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
