@@ -209,7 +209,10 @@
                 url: 'https://cdn.datatables.net/plug-ins/1.13.8/i18n/id.json',
             },
             order: [[0, 'asc']],
-            pageLength: 10,
+            paging: false,
+            info: false,
+            lengthChange: false,
+            searching: false,
             columnDefs: [
                 { orderable: false, targets: [2, 3, 6] }, // Jenis, Dokumen/Link, Aksi tidak sortable
             ],

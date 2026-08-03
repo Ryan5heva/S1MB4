@@ -280,7 +280,10 @@
         if ($('#tableKetenagakerjaan').length && $('#tableKetenagakerjaan tbody tr td').length > 1) {
             $('#tableKetenagakerjaan').DataTable({
                 language: { url: 'https://cdn.datatables.net/plug-ins/1.13.8/i18n/id.json' },
-                pageLength: 10,
+                paging: false,
+                info: false,
+                lengthChange: false,
+                searching: false,
                 columnDefs: [{ orderable: false, targets: [6] }],
             });
         }
