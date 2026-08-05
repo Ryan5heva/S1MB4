@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePpidInformasiRequest;
 use App\Http\Requests\UpdatePpidInformasiRequest;
 use App\Models\ActivityLog;
+use App\Models\JenisDokumen;
 use App\Models\PpidInformasi;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,40 +16,49 @@ use Illuminate\View\View;
 class PpidInformasiBerkalaController extends Controller
 {
     /**
-     * Tampilkan halaman Informasi Berkala dengan semua seksi.
+     * Tampilkan halaman PPID dengan satu tabel dinamis.
      *
-     * Data dikelompokkan per kategori dan diurutkan sesuai urutan kanonical.
-     * Setiap baris fixed item selalu ada (seeded); admin hanya mengisi dokumen/link.
+     * Kategori dipilih via dropdown (query string ?jenis_dokumen_id=X).
+     * Default: kategori pertama dari tabel jenis_dokumen (id terkecil).
      */
-    public function index(): View
+    public function index(Request $request): View
     {
-        // Ambil semua data berkala, kelompokkan per kategori
-        $rawData = PpidInformasi::berkala()
-            ->with('user')
-            ->orderBy('kategori_urutan')
+        // Semua jenis dokumen (untuk isi dropdown), urutkan by id asc
+        $jenisDokumenList = JenisDokumen::orderBy('id')->get();
+
+        // Tentukan id kategori aktif (dari query string atau default ke yang pertama)
+        $defaultId        = $jenisDokumenList->first()?->id;
+        $jenisDokumenId   = (int) $request->query('jenis_dokumen_id', $defaultId);
+
+        // Kategori yang sedang aktif (untuk label judul & cek is_fixed)
+        $jenisDokumenAktif = JenisDokumen::find($jenisDokumenId);
+
+        // Ambil semua item PPID untuk kategori ini, urutkan by urutan asc
+        $items = PpidInformasi::with('user')
+            ->where('id_jenis_dokumen', $jenisDokumenId)
             ->orderBy('urutan')
-            ->get()
-            ->groupBy('kategori');
+            ->orderBy('id')
+            ->get();
 
-        // Susun seksi sesuai urutan kanonical dari model
-        $sections = collect(PpidInformasi::KATEGORI_ORDER_BERKALA)
-            ->mapWithKeys(fn($k) => [$k => $rawData->get($k, collect())]);
-
-        return view('ppid.berkala.index', compact('sections'));
+        return view('ppid.berkala.index', compact('jenisDokumenList', 'jenisDokumenAktif', 'items'));
     }
 
     /**
-     * Tampilkan form tambah item baru (khusus Ketenagakerjaan).
+     * Tampilkan form tambah item baru.
      *
-     * Hanya kategori Ketenagakerjaan yang membolehkan penambahan baris baru.
+     * Kategori dipilih dari dropdown jenis_dokumen.
+     * Query string ?jenis_dokumen_id=X untuk pra-pilih kategori tertentu.
      */
-    public function create(): View
+    public function create(Request $request): View
     {
-        return view('ppid.berkala.create');
+        $jenisDokumenList = JenisDokumen::orderBy('id')->get();
+        $jenisDokumenId   = (int) $request->query('jenis_dokumen_id', $jenisDokumenList->first()?->id);
+
+        return view('ppid.berkala.create', compact('jenisDokumenList', 'jenisDokumenId'));
     }
 
     /**
-     * Simpan item Ketenagakerjaan baru ke database.
+     * Simpan item PPID baru ke database.
      */
     public function store(StorePpidInformasiRequest $request): RedirectResponse
     {
@@ -59,30 +69,32 @@ class PpidInformasiBerkalaController extends Controller
             $filePath = $request->file('file')->store('ppid', 'public');
         }
 
-        PpidInformasi::create([
-            'jenis_menu'      => 'berkala',
-            'kategori'        => 'Ketenagakerjaan',
-            'kategori_urutan' => 9,
-            'nama_informasi'  => $validated['nama_informasi'],
-            'deskripsi'       => $validated['deskripsi'] ?? null,
-            'jenis'           => $validated['jenis'],
-            'file'            => $filePath,
-            'url'             => $validated['jenis'] === 'link' ? ($validated['url'] ?? null) : null,
-            'status'          => $validated['status'],
-            'urutan'          => $validated['urutan'] ?? 0,
-            'published_at'    => $validated['published_at'] ?? null,
-            'is_fixed'        => false,
-            'user_id'         => Auth::id(),
+        $item = PpidInformasi::create([
+            'jenis_menu'       => 'berkala',
+            'id_jenis_dokumen' => $validated['id_jenis_dokumen'],
+            'nama_informasi'   => $validated['nama_informasi'],
+            'deskripsi'        => $validated['deskripsi'] ?? null,
+            'jenis'            => $validated['jenis'],
+            'file'             => $filePath,
+            'url'              => $validated['jenis'] === 'link' ? ($validated['url'] ?? null) : null,
+            'status'           => $validated['status'],
+            'urutan'           => $validated['urutan'] ?? 0,
+            'tahun'            => $validated['tahun'] ?? null,
+            'published_at'     => $validated['published_at'] ?? null,
+            'is_fixed'         => false,
+            'user_id'          => Auth::id(),
         ]);
+
+        $kategoriNama = JenisDokumen::find($validated['id_jenis_dokumen'])?->jenis_dokumen ?? '-';
 
         ActivityLog::catat(
             'Tambah Data',
-            'Menambahkan PPID Informasi Berkala (Ketenagakerjaan): "' . $validated['nama_informasi'] . '".'
+            'Menambahkan PPID Informasi Berkala (' . $kategoriNama . '): "' . $validated['nama_informasi'] . '".'
         );
 
         return redirect()
-            ->route('ppid.berkala.index', ['#ketenagakerjaan'])
-            ->with('success', 'Data Ketenagakerjaan berhasil ditambahkan.');
+            ->route('ppid.berkala.index', ['jenis_dokumen_id' => $validated['id_jenis_dokumen']])
+            ->with('success', 'Data "' . $validated['nama_informasi'] . '" berhasil ditambahkan.');
     }
 
     /**
@@ -92,15 +104,17 @@ class PpidInformasiBerkalaController extends Controller
      */
     public function edit(PpidInformasi $ppid): View
     {
-        $ppid->load('user');
-        return view('ppid.berkala.edit', compact('ppid'));
+        $ppid->load(['user', 'jenisDokumen']);
+        $jenisDokumenList = JenisDokumen::orderBy('id')->get();
+
+        return view('ppid.berkala.edit', compact('ppid', 'jenisDokumenList'));
     }
 
     /**
      * Update dokumen/link pada baris Informasi Berkala.
      *
-     * Yang boleh diubah: deskripsi, jenis, file, url, status, urutan, published_at.
-     * Yang TIDAK boleh diubah: nama_informasi, kategori, jenis_menu, is_fixed.
+     * Yang boleh diubah: deskripsi, jenis, file, url, status, urutan, tahun, published_at.
+     * Yang TIDAK boleh diubah: nama_informasi, id_jenis_dokumen (jika fixed), jenis_menu, is_fixed.
      */
     public function update(UpdatePpidInformasiRequest $request, PpidInformasi $ppid): RedirectResponse
     {
@@ -131,6 +145,7 @@ class PpidInformasiBerkalaController extends Controller
             'url'          => $validated['jenis'] === 'link' ? ($validated['url'] ?? null) : null,
             'status'       => $validated['status'],
             'urutan'       => $validated['urutan'] ?? $ppid->urutan,
+            'tahun'        => $validated['tahun'] ?? null,
             'published_at' => $validated['published_at'] ?? null,
             'user_id'      => Auth::id(),
         ]);
@@ -140,34 +155,39 @@ class PpidInformasiBerkalaController extends Controller
             'Mengubah dokumen PPID Informasi Berkala: "' . $ppid->nama_informasi . '".'
         );
 
+        $jenisDokumenId = $ppid->id_jenis_dokumen;
+
         return redirect()
-            ->route('ppid.berkala.index')
+            ->route('ppid.berkala.index', ['jenis_dokumen_id' => $jenisDokumenId])
             ->with('success', 'Dokumen/link "' . $ppid->nama_informasi . '" berhasil diperbarui.');
     }
 
     /**
-     * Hapus item Ketenagakerjaan (non-fixed) dari database.
+     * Hapus item PPID (non-fixed) dari database.
      *
      * Fixed items tidak dapat dihapus — dilindungi oleh is_fixed check.
      * Hanya Admin dan Super Admin yang dapat menghapus.
      */
     public function destroy(PpidInformasi $ppid): RedirectResponse
     {
+        $jenisDokumenId = $ppid->id_jenis_dokumen;
+
         // Guard: item fixed tidak boleh dihapus
         if ($ppid->is_fixed) {
             return redirect()
-                ->route('ppid.berkala.index')
+                ->route('ppid.berkala.index', ['jenis_dokumen_id' => $jenisDokumenId])
                 ->with('error', 'Data ini bersifat tetap dan tidak dapat dihapus.');
         }
 
         // Guard: hanya admin/super admin
         if (! Auth::user()->canDelete()) {
             return redirect()
-                ->route('ppid.berkala.index')
+                ->route('ppid.berkala.index', ['jenis_dokumen_id' => $jenisDokumenId])
                 ->with('error', 'Aksi ditolak. Hanya Admin atau Super Admin yang dapat menghapus data.');
         }
 
         $nama = $ppid->nama_informasi;
+        $kategoriNama = $ppid->jenisDokumen?->jenis_dokumen ?? '-';
 
         if ($ppid->file && Storage::disk('public')->exists($ppid->file)) {
             Storage::disk('public')->delete($ppid->file);
@@ -177,11 +197,11 @@ class PpidInformasiBerkalaController extends Controller
 
         ActivityLog::catat(
             'Hapus Data',
-            'Menghapus PPID Informasi Berkala (Ketenagakerjaan): "' . $nama . '".'
+            'Menghapus PPID Informasi Berkala (' . $kategoriNama . '): "' . $nama . '".'
         );
 
         return redirect()
-            ->route('ppid.berkala.index')
+            ->route('ppid.berkala.index', ['jenis_dokumen_id' => $jenisDokumenId])
             ->with('success', 'Data "' . $nama . '" berhasil dihapus.');
     }
 }

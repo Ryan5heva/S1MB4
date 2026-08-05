@@ -16,6 +16,8 @@ class PpidInformasi extends Model
         'jenis_menu',
         'kategori',
         'kategori_urutan',
+        'id_jenis_dokumen',
+        'tahun',
         'nama_informasi',
         'deskripsi',
         'jenis',
@@ -35,6 +37,7 @@ class PpidInformasi extends Model
             'urutan'          => 'integer',
             'kategori_urutan' => 'integer',
             'is_fixed'        => 'boolean',
+            'tahun'           => 'integer',
         ];
     }
 
@@ -83,6 +86,14 @@ class PpidInformasi extends Model
     // =========================================================
     //  Relasi
     // =========================================================
+
+    /**
+     * Jenis dokumen (kategori) yang mengelompokkan baris ini.
+     */
+    public function jenisDokumen()
+    {
+        return $this->belongsTo(JenisDokumen::class, 'id_jenis_dokumen');
+    }
 
     /**
      * Pengguna yang terakhir mengubah baris ini.

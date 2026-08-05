@@ -353,16 +353,13 @@
             // Pengguna berdiri sendiri, tidak termasuk dalam dropdown Kelola
             $isKelolaActive     = $isKelolaDanBerita || $isKelolaVideo || $isKelolaRiwayat;
 
-            // PPID — tambah variabel baru setiap menu PPID diimplementasikan
+            // PPID — satu link tunggal (kategori dipilih via dropdown DI DALAM halaman)
             $isPpidBerkala      = request()->routeIs('ppid.berkala.*');
             $isPpidSertaMerta   = request()->routeIs('ppid.serta_merta.*');
             $isPpidSetiapSaat   = request()->routeIs('ppid.setiap_saat.*');
             $isPpidDikecualikan = request()->routeIs('ppid.dikecualikan.*');
             $isPpidLaporanAkses = request()->routeIs('ppid.laporan_akses_informasi.*');
             $isPpidActive       = $isPpidBerkala || $isPpidSertaMerta || $isPpidSetiapSaat || $isPpidDikecualikan || $isPpidLaporanAkses;
-
-            // SAKIP-RB
-            $isSakipRb = request()->routeIs('sakip-rb.*');
         @endphp
 
         <nav class="flex-1 px-4 py-5 flex flex-col gap-1">
@@ -442,78 +439,12 @@
             <hr class="sidebar-divider">
             <p class="text-white/40 text-xs font-semibold uppercase tracking-widest px-1 mb-1 mt-1">PPID</p>
 
-            {{-- ─── Dropdown: PPID ─── --}}
-            <div>
-                {{-- Trigger --}}
-                <button
-                    type="button"
-                    id="sidebarPpidTrigger"
-                    aria-expanded="{{ $isPpidActive ? 'true' : 'false' }}"
-                    aria-controls="sidebarPpidMenu"
-                    onclick="toggleSidebarGroup(this)"
-                    class="sidebar-group-trigger {{ $isPpidActive ? 'group-active' : '' }}"
-                >
-                    <i class="bi bi-shield-check" style="font-size: 1rem;"></i>
-                    <span>PPID</span>
-                    <i class="bi bi-chevron-right sidebar-arrow"></i>
-                </button>
-
-                {{-- Submenu PPID --}}
-                <div
-                    id="sidebarPpidMenu"
-                    class="sidebar-submenu {{ $isPpidActive ? 'submenu-open' : '' }}"
-                    role="region"
-                    aria-labelledby="sidebarPpidTrigger"
-                >
-                    <div class="sidebar-submenu-inner">
-
-                        {{-- Informasi Berkala --}}
-                        <a href="{{ route('ppid.berkala.index') }}"
-                           class="sidebar-sublink {{ $isPpidBerkala ? 'active' : '' }}">
-                            <i class="bi bi-calendar-check"></i>
-                            <span>Informasi Berkala</span>
-                        </a>
-
-                        {{-- Informasi Serta Merta --}}
-                        <a href="{{ route('ppid.serta_merta.index') }}"
-                           class="sidebar-sublink {{ $isPpidSertaMerta ? 'active' : '' }}">
-                            <i class="bi bi-lightning-charge"></i>
-                            <span>Serta Merta</span>
-                        </a>
-
-                        {{-- Informasi Setiap Saat --}}
-                        <a href="{{ route('ppid.setiap_saat.index') }}"
-                           class="sidebar-sublink {{ $isPpidSetiapSaat ? 'active' : '' }}">
-                            <i class="bi bi-clock"></i>
-                            <span>Informasi Setiap Saat</span>
-                        </a>
-
-                        {{-- Informasi Dikecualikan --}}
-                        <a href="{{ route('ppid.dikecualikan.index') }}"
-                           class="sidebar-sublink {{ $isPpidDikecualikan ? 'active' : '' }}">
-                            <i class="bi bi-lock"></i>
-                            <span>Dikecualikan</span>
-                        </a>
-
-                        {{-- Laporan Akses Informasi --}}
-                        <a href="{{ route('ppid.laporan_akses_informasi.index') }}"
-                           class="sidebar-sublink {{ $isPpidLaporanAkses ? 'active' : '' }}">
-                            <i class="bi bi-bar-chart-line"></i>
-                            <span>Laporan Akses</span>
-                        </a>
-
-                    </div>
-                </div>
-            </div>
-
-            {{-- ─── SAKIP-RB (standalone) ─── --}}
-            <hr class="sidebar-divider">
-            <p class="text-white/40 text-xs font-semibold uppercase tracking-widest px-1 mb-1 mt-1">SAKIP-RB</p>
-            <a href="{{ route('sakip-rb.index') }}"
-               class="sidebar-link {{ $isSakipRb ? 'active' : '' }}"
-               id="sidebarSakipRb">
-                <i class="bi bi-clipboard-check" style="font-size: 1rem;"></i>
-                <span>SAKIP-RB</span>
+            {{-- ─── PPID (link tunggal — kategori dipilih via dropdown di dalam halaman) ─── --}}
+            <a href="{{ route('ppid.berkala.index') }}"
+               class="sidebar-link {{ $isPpidActive ? 'active' : '' }}"
+               id="sidebarPpid">
+                <i class="bi bi-shield-check" style="font-size: 1rem;"></i>
+                <span>PPID</span>
             </a>
 
         </nav>

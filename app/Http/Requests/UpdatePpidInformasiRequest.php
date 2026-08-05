@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 /**
  * Validasi untuk mengupdate dokumen/link pada baris Informasi Berkala.
- * Berlaku untuk fixed items maupun Ketenagakerjaan.
+ * Berlaku untuk semua kategori PPID.
  * Nama Informasi TIDAK divalidasi karena tidak boleh diubah via form.
  */
 class UpdatePpidInformasiRequest extends FormRequest
@@ -20,6 +20,7 @@ class UpdatePpidInformasiRequest extends FormRequest
     {
         return [
             'deskripsi'    => ['nullable', 'string'],
+            'tahun'        => ['nullable', 'integer', 'min:2000', 'max:' . (date('Y') + 5)],
             'jenis'        => ['required', 'in:dokumen,link'],
 
             // File opsional saat update — hanya replace jika ada file baru
@@ -46,6 +47,8 @@ class UpdatePpidInformasiRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'tahun.integer'    => 'Tahun harus berupa angka.',
+            'tahun.min'        => 'Tahun tidak boleh kurang dari 2000.',
             'jenis.required'   => 'Jenis informasi wajib dipilih.',
             'jenis.in'         => 'Jenis informasi tidak valid.',
             'file.mimes'       => 'Format file tidak didukung. Gunakan: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX.',

@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('title', 'PPID — Informasi Berkala')
-@section('page-title', 'Informasi Berkala')
-@section('page-subtitle', 'Pengelolaan dokumen & tautan PPID — Informasi yang wajib disediakan secara berkala')
+@section('page-title', 'PPID')
+@section('page-subtitle', 'Pengelolaan dokumen & tautan informasi publik — ' . ($jenisDokumenAktif?->jenis_dokumen ?? 'Pilih kategori'))
 
 @push('styles')
 <style>
@@ -18,24 +18,6 @@
     .badge-link     { background: #ede9fe; color: #6d28d9; }
     .badge-belum    { background: #fff7ed; color: #c2410c; }
 
-    /* ── Section card ── */
-    .ppid-section { margin-bottom: 1.5rem; }
-    .ppid-section-header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 0.875rem 1.25rem;
-        background: linear-gradient(135deg, #f0fdfa, #f8fafc);
-        border-bottom: 1px solid #e2e8f0;
-        border-radius: 1rem 1rem 0 0;
-    }
-    .ppid-section-title {
-        font-size: 0.875rem; font-weight: 600; color: #1e293b;
-        display: flex; align-items: center; gap: 0.5rem;
-    }
-    .ppid-section-badge {
-        font-size: 0.7rem; font-weight: 500; color: #94a3b8;
-        background: #f1f5f9; padding: 0.125rem 0.5rem; border-radius: 9999px;
-    }
-
     /* ── Table cells ── */
     .ppid-table th {
         background: #f8fafc; font-size: 0.7rem; font-weight: 600;
@@ -49,84 +31,109 @@
     .ppid-table tr:last-child td { border-bottom: none; }
     .ppid-table tr:hover td { background: #fafafa; }
 
-    /* ── Quick Nav ── */
-    .quick-nav {
-        display: flex; flex-wrap: wrap; gap: 0.5rem;
-        padding: 0.875rem 1rem;
-        background: white; border-radius: 1rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-        margin-bottom: 1.5rem;
+    /* ── Dropdown kategori ── */
+    .kategori-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%2364748b' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 14px;
+        padding-right: 2.5rem;
+        font-weight: 500;
+        font-size: 0.875rem;
+        color: #1e293b;
+        border: 1.5px solid #e2e8f0;
+        border-radius: 0.5rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+        padding-left: 0.75rem;
+        background-color: #fff;
+        cursor: pointer;
+        transition: border-color 0.15s, box-shadow 0.15s;
+        min-width: 260px;
     }
-    .quick-nav a {
-        font-size: 0.75rem; font-weight: 500;
-        color: #475569; padding: 0.25rem 0.625rem;
-        background: #f1f5f9; border-radius: 0.375rem;
-        text-decoration: none; transition: all 0.15s;
-        white-space: nowrap;
+    .kategori-select:focus {
+        outline: none;
+        border-color: #148F9A;
+        box-shadow: 0 0 0 3px rgba(20,143,154,0.12);
     }
-    .quick-nav a:hover { background: #148F9A; color: white; }
-
-
 </style>
 @endpush
 
 @section('content')
 
-{{-- Header --}}
-<div class="flex items-center justify-between mb-5">
-    <div>
-        <h3 class="text-base font-semibold text-gray-800">Daftar Informasi Berkala</h3>
+{{-- Header: Dropdown kategori + Tombol Tambah --}}
+<div class="flex items-center justify-between mb-5 flex-wrap gap-3">
+    <div class="flex items-center gap-3 flex-wrap">
+        <form method="GET" action="{{ route('ppid.berkala.index') }}" id="formKategori">
+            <select name="jenis_dokumen_id"
+                    id="dropdownKategori"
+                    class="kategori-select"
+                    onchange="document.getElementById('formKategori').submit()">
+                @foreach($jenisDokumenList as $jd)
+                    <option value="{{ $jd->id }}"
+                        {{ $jenisDokumenAktif?->id == $jd->id ? 'selected' : '' }}>
+                        {{ $jd->jenis_dokumen }}
+                    </option>
+                @endforeach
+            </select>
+        </form>
+
+        @if($jenisDokumenAktif)
+            <span class="text-xs text-gray-400">
+                {{ $items->count() }} item
+            </span>
+        @endif
     </div>
-</div>
 
-
-{{-- Quick Navigation --}}
-<div class="quick-nav">
-    <span class="text-xs font-semibold text-gray-400 self-center mr-1">Lompat ke:</span>
-    @foreach($sections as $kategori => $items)
-        <a href="#section-{{ Str::slug($kategori) }}">
-            {{ Str::limit($kategori, 28) }}
+    {{-- Tombol Tambah Data — hanya tampil jika kategori tidak terdiri dari fixed items saja --}}
+    @php
+        $semuaFixed = $items->isNotEmpty() && $items->every(fn($i) => $i->is_fixed);
+        $showTambah = $jenisDokumenAktif && !$semuaFixed;
+    @endphp
+    @if($showTambah)
+        <a href="{{ route('ppid.berkala.create', ['jenis_dokumen_id' => $jenisDokumenAktif->id]) }}"
+           class="btn-primary"
+           id="addPpidBtn"
+           style="padding:0.4rem 1rem; font-size:0.8125rem;">
+            <i class="bi bi-plus-lg"></i> Tambah Data
         </a>
-    @endforeach
+    @endif
 </div>
 
-{{-- Sections --}}
-@foreach($sections as $kategori => $items)
-@php
-    $slug         = Str::slug($kategori);
-    $isKetenaga   = ($kategori === 'Ketenagakerjaan');
-    $sectionFill  = $items->filter(fn($i) => $i->hasDokumen())->count();
-    $sectionTotal = $items->count();
-@endphp
-<div class="ppid-section bg-white rounded-2xl overflow-hidden" id="section-{{ $slug }}"
+{{-- Tabel Utama --}}
+<div class="bg-white rounded-2xl overflow-hidden"
      style="box-shadow:0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04);">
 
-    {{-- Section Header --}}
-    <div class="ppid-section-header">
-        <div class="ppid-section-title">
+    {{-- Card Header --}}
+    <div class="flex items-center justify-between px-5 py-4"
+         style="background: linear-gradient(135deg, #f0fdfa, #f8fafc); border-bottom: 1px solid #e2e8f0;">
+        <div class="flex items-center gap-2">
             <i class="bi bi-folder2-open" style="color:#148F9A;"></i>
-            {{ $kategori }}
-            @if($sectionTotal > 0)
-                <span class="ppid-section-badge">
-                    {{ $sectionFill }}/{{ $sectionTotal }} terisi
+            <span class="text-sm font-semibold text-gray-800">
+                {{ $jenisDokumenAktif?->jenis_dokumen ?? 'Pilih Kategori' }}
+            </span>
+            @if($jenisDokumenAktif)
+                <span class="text-xs font-medium text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                    {{ $items->filter(fn($i) => $i->hasDokumen())->count() }}/{{ $items->count() }} terisi
                 </span>
             @endif
         </div>
-        @if($isKetenaga)
-            <a href="{{ route('ppid.berkala.create') }}" class="btn-primary" style="padding:0.35rem 0.875rem; font-size:0.8rem;" id="addKetenagaBtn">
-                <i class="bi bi-plus-lg"></i> Tambah Data
-            </a>
+        @if($jenisDokumenAktif?->klasifikasi)
+            <span class="text-xs text-gray-400 italic">
+                Klasifikasi: {{ $jenisDokumenAktif->klasifikasi }}
+            </span>
         @endif
     </div>
 
     {{-- Table --}}
     <div class="overflow-x-auto">
-        <table class="w-full ppid-table"
-               @if($isKetenaga) id="tableKetenagakerjaan" @endif>
+        <table class="w-full ppid-table" id="tablePpidBerkala">
             <thead>
                 <tr>
                     <th class="text-left w-8">No</th>
                     <th class="text-left">Nama Informasi</th>
+                    <th class="text-center" style="width:80px;">Tahun</th>
                     <th class="text-center" style="width:90px;">Jenis</th>
                     <th class="text-left">Dokumen / Link</th>
                     <th class="text-center" style="width:90px;">Status</th>
@@ -145,6 +152,15 @@
                         <span class="font-medium text-gray-800" style="font-size:0.8125rem;">{{ $item->nama_informasi }}</span>
                         @if($item->deskripsi)
                             <p class="text-xs text-gray-400 mt-0.5 leading-snug" style="max-width:280px;">{{ Str::limit($item->deskripsi, 60) }}</p>
+                        @endif
+                    </td>
+
+                    {{-- Tahun --}}
+                    <td class="text-center">
+                        @if($item->tahun)
+                            <span class="text-xs font-medium text-gray-600">{{ $item->tahun }}</span>
+                        @else
+                            <span class="text-xs text-gray-300">—</span>
                         @endif
                     </td>
 
@@ -218,7 +234,7 @@
                                 </a>
                             @endif
 
-                            {{-- Hapus — hanya untuk item non-fixed (Ketenagakerjaan) --}}
+                            {{-- Hapus — hanya untuk item non-fixed --}}
                             @if(! $item->is_fixed && Auth::user()->canDelete())
                                 <button type="button"
                                     class="btn-danger" style="padding:0.3rem 0.5rem; font-size:0.75rem;"
@@ -240,13 +256,11 @@
                 </tr>
                 @empty
                 <tr>
-                    <td colspan="7" class="text-center py-10 text-gray-400">
-                        @if($isKetenaga)
-                            <i class="bi bi-plus-circle" style="font-size:2rem;color:#d1d5db;display:block;margin-bottom:.5rem;"></i>
-                            <p class="text-sm font-medium text-gray-500">Belum ada data Ketenagakerjaan</p>
+                    <td colspan="8" class="text-center py-10 text-gray-400">
+                        <i class="bi bi-inbox" style="font-size:2rem;color:#d1d5db;display:block;margin-bottom:.5rem;"></i>
+                        <p class="text-sm font-medium text-gray-500">Belum ada data untuk kategori ini</p>
+                        @if($showTambah ?? false)
                             <p class="text-xs mt-1">Klik <strong>Tambah Data</strong> untuk menambahkan informasi.</p>
-                        @else
-                            <span class="text-xs">Tidak ada data</span>
                         @endif
                     </td>
                 </tr>
@@ -255,19 +269,11 @@
         </table>
     </div>
 </div>
-@endforeach
-
-{{-- Back to top --}}
-<div class="text-center mt-4">
-    <a href="#" class="text-xs text-gray-400 hover:text-teal-600 inline-flex items-center gap-1 transition-colors">
-        <i class="bi bi-arrow-up-circle"></i> Kembali ke atas
-    </a>
-</div>
 
 @endsection
 
 @push('scripts')
-{{-- jQuery + DataTables untuk tabel Ketenagakerjaan yang dinamis --}}
+{{-- jQuery + DataTables --}}
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
@@ -276,15 +282,15 @@
 
 <script>
     $(document).ready(function () {
-        // DataTables hanya untuk Ketenagakerjaan (tabel yang dinamis)
-        if ($('#tableKetenagakerjaan').length && $('#tableKetenagakerjaan tbody tr td').length > 1) {
-            $('#tableKetenagakerjaan').DataTable({
+        // DataTables untuk tabel utama PPID (jika ada data)
+        if ($('#tablePpidBerkala tbody tr td').length > 1) {
+            $('#tablePpidBerkala').DataTable({
                 language: { url: 'https://cdn.datatables.net/plug-ins/1.13.8/i18n/id.json' },
                 paging: false,
                 info: false,
                 lengthChange: false,
                 searching: false,
-                columnDefs: [{ orderable: false, targets: [6] }],
+                columnDefs: [{ orderable: false, targets: [7] }],
             });
         }
     });

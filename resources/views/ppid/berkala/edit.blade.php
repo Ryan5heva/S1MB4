@@ -2,17 +2,17 @@
 
 @section('title', 'Edit — ' . $ppid->nama_informasi)
 @section('page-title', $ppid->hasDokumen() ? 'Edit Dokumen/Link' : 'Tambah Dokumen/Link')
-@section('page-subtitle', $ppid->kategori . ' — ' . Str::limit($ppid->nama_informasi, 60))
+@section('page-subtitle', ($ppid->jenisDokumen?->jenis_dokumen ?? $ppid->kategori ?? 'PPID') . ' — ' . Str::limit($ppid->nama_informasi, 60))
 
 @section('content')
 <div class="max-w-2xl">
 
     {{-- Back --}}
     <div class="mb-4">
-        <a href="{{ route('ppid.berkala.index') }}#section-{{ Str::slug($ppid->kategori) }}"
+        <a href="{{ route('ppid.berkala.index', ['jenis_dokumen_id' => $ppid->id_jenis_dokumen]) }}"
            class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors">
             <i class="bi bi-arrow-left"></i>
-            Kembali ke Informasi Berkala
+            Kembali ke PPID
         </a>
     </div>
 
@@ -26,7 +26,9 @@
                     <i class="bi bi-file-earmark-text" style="color:#148F9A;font-size:1.1rem;"></i>
                 </div>
                 <div>
-                    <p class="text-xs text-gray-400 mb-0.5">{{ $ppid->kategori }}</p>
+                    <p class="text-xs text-gray-400 mb-0.5">
+                        {{ $ppid->jenisDokumen?->jenis_dokumen ?? $ppid->kategori ?? 'PPID' }}
+                    </p>
                     <h3 class="text-sm font-semibold text-gray-800">{{ $ppid->nama_informasi }}</h3>
                     @if($ppid->is_fixed)
                         <span class="inline-flex items-center gap-1 text-xs text-amber-600 bg-amber-50 border border-amber-200 rounded px-2 py-0.5 mt-1.5">
@@ -66,6 +68,28 @@
                 <input type="text" value="{{ $ppid->nama_informasi }}"
                        class="form-input" readonly
                        style="background:#f9fafb; color:#9ca3af; cursor:not-allowed;">
+            </div>
+
+            {{-- Kategori (readonly, informatif) --}}
+            <div>
+                <label class="form-label">Kategori</label>
+                <input type="text"
+                       value="{{ $ppid->jenisDokumen?->jenis_dokumen ?? $ppid->kategori ?? '—' }}"
+                       class="form-input" readonly
+                       style="background:#f9fafb; color:#9ca3af; cursor:not-allowed;">
+            </div>
+
+            {{-- Tahun --}}
+            <div>
+                <label for="tahun" class="form-label">
+                    Tahun <span class="text-gray-400 text-xs font-normal">(opsional)</span>
+                </label>
+                <input type="number" id="tahun" name="tahun"
+                       value="{{ old('tahun', $ppid->tahun) }}"
+                       min="2000" max="{{ date('Y') + 5 }}"
+                       placeholder="Contoh: {{ date('Y') }}"
+                       class="form-input"
+                       {{ $ppid->is_fixed ? 'readonly style=background:#f9fafb;color:#9ca3af;cursor:not-allowed;' : '' }}>
             </div>
 
             {{-- Deskripsi --}}
@@ -189,7 +213,7 @@
                     <i class="bi bi-check-lg"></i>
                     {{ $ppid->hasDokumen() ? 'Simpan Perubahan' : 'Simpan Dokumen/Link' }}
                 </button>
-                <a href="{{ route('ppid.berkala.index') }}#section-{{ Str::slug($ppid->kategori) }}"
+                <a href="{{ route('ppid.berkala.index', ['jenis_dokumen_id' => $ppid->id_jenis_dokumen]) }}"
                    class="btn-secondary">Batal</a>
             </div>
         </form>

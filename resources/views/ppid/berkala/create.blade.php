@@ -1,18 +1,18 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Data Ketenagakerjaan')
-@section('page-title', 'Tambah Data Ketenagakerjaan')
-@section('page-subtitle', 'PPID Informasi Berkala — Ketenagakerjaan')
+@section('title', 'Tambah Data PPID')
+@section('page-title', 'Tambah Data PPID')
+@section('page-subtitle', 'PPID Informasi Berkala — Tambah item baru ke kategori')
 
 @section('content')
 <div class="max-w-2xl">
 
     {{-- Back --}}
     <div class="mb-4">
-        <a href="{{ route('ppid.berkala.index') }}#section-ketenagakerjaan"
+        <a href="{{ route('ppid.berkala.index', ['jenis_dokumen_id' => $jenisDokumenId]) }}"
            class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-700 transition-colors">
             <i class="bi bi-arrow-left"></i>
-            Kembali ke Informasi Berkala
+            Kembali ke PPID
         </a>
     </div>
 
@@ -22,11 +22,11 @@
         <div class="mb-6 pb-4 border-b border-gray-100">
             <div class="flex items-center gap-3">
                 <div class="w-9 h-9 rounded-xl flex items-center justify-center" style="background:rgba(20,143,154,0.1);">
-                    <i class="bi bi-briefcase" style="color:#148F9A;font-size:1.1rem;"></i>
+                    <i class="bi bi-plus-circle" style="color:#148F9A;font-size:1.1rem;"></i>
                 </div>
                 <div>
                     <p class="text-xs text-gray-400">PPID Informasi Berkala</p>
-                    <h3 class="text-sm font-semibold text-gray-800">Tambah Data Ketenagakerjaan</h3>
+                    <h3 class="text-sm font-semibold text-gray-800">Tambah Data Baru</h3>
                 </div>
             </div>
         </div>
@@ -49,8 +49,28 @@
               action="{{ route('ppid.berkala.store') }}"
               enctype="multipart/form-data"
               class="space-y-5"
-              id="formTambahKetenaga">
+              id="formTambahPpid">
             @csrf
+
+            {{-- Kategori / Jenis Dokumen --}}
+            <div>
+                <label for="id_jenis_dokumen" class="form-label">
+                    Kategori <span class="text-red-500">*</span>
+                </label>
+                <select name="id_jenis_dokumen" id="id_jenis_dokumen"
+                        class="form-input" required
+                        onchange="toggleTahun(this.value)">
+                    <option value="">— Pilih Kategori —</option>
+                    @foreach($jenisDokumenList as $jd)
+                        <option value="{{ $jd->id }}"
+                            data-klasifikasi="{{ $jd->klasifikasi }}"
+                            {{ (old('id_jenis_dokumen', $jenisDokumenId) == $jd->id) ? 'selected' : '' }}>
+                            {{ $jd->jenis_dokumen }}
+                        </option>
+                    @endforeach
+                </select>
+                <p class="text-xs text-gray-400 mt-1">Pilih kategori PPID untuk data ini.</p>
+            </div>
 
             {{-- Nama Informasi --}}
             <div>
@@ -59,7 +79,7 @@
                 </label>
                 <input type="text" id="nama_informasi" name="nama_informasi"
                        value="{{ old('nama_informasi') }}"
-                       placeholder="Contoh: Pelatihan Tenaga Kerja 2025"
+                       placeholder="Nama dokumen atau informasi"
                        class="form-input" required>
             </div>
 
@@ -71,6 +91,18 @@
                 <textarea id="deskripsi" name="deskripsi" rows="3"
                           placeholder="Keterangan singkat..."
                           class="form-input resize-y">{{ old('deskripsi') }}</textarea>
+            </div>
+
+            {{-- Tahun (opsional, tampil selalu tapi wajib jika klasifikasi = 'sakip') --}}
+            <div id="fieldTahun">
+                <label for="tahun" class="form-label">
+                    Tahun <span class="text-gray-400 text-xs font-normal" id="tahunNote">(opsional)</span>
+                </label>
+                <input type="number" id="tahun" name="tahun"
+                       value="{{ old('tahun', date('Y')) }}"
+                       min="2000" max="{{ date('Y') + 5 }}"
+                       placeholder="Contoh: {{ date('Y') }}"
+                       class="form-input">
             </div>
 
             {{-- Jenis --}}
@@ -158,7 +190,8 @@
                 <button type="submit" id="submitBtn" class="btn-primary">
                     <i class="bi bi-check-lg"></i> Simpan Data
                 </button>
-                <a href="{{ route('ppid.berkala.index') }}#section-ketenagakerjaan" class="btn-secondary">Batal</a>
+                <a href="{{ route('ppid.berkala.index', ['jenis_dokumen_id' => $jenisDokumenId]) }}"
+                   class="btn-secondary">Batal</a>
             </div>
         </form>
     </div>
@@ -172,6 +205,19 @@
         document.getElementById('fieldLink').classList.toggle('hidden', val !== 'link');
         document.getElementById('url').required = (val === 'link');
         if (val !== 'dokumen') clearFile();
+    }
+
+    function toggleTahun(selectVal) {
+        const opt = document.querySelector('#id_jenis_dokumen option[value="' + selectVal + '"]');
+        const klasifikasi = opt ? opt.dataset.klasifikasi : '';
+        const note = document.getElementById('tahunNote');
+        if (klasifikasi && klasifikasi.toLowerCase() === 'sakip') {
+            note.textContent = '(wajib untuk SAKIP)';
+            document.getElementById('tahun').required = true;
+        } else {
+            note.textContent = '(opsional)';
+            document.getElementById('tahun').required = false;
+        }
     }
 
     const dropZone = document.getElementById('dropZone');
@@ -193,6 +239,10 @@
     document.addEventListener('DOMContentLoaded', () => {
         const checked = document.querySelector('input[name="jenis"]:checked');
         if (checked) toggleJenis(checked.value);
+
+        // Init toggleTahun berdasar kategori yang sudah dipilih
+        const sel = document.getElementById('id_jenis_dokumen');
+        if (sel && sel.value) toggleTahun(sel.value);
     });
 </script>
 @endpush
