@@ -437,15 +437,43 @@
             @endif
 
             <hr class="sidebar-divider">
-            <p class="text-white/40 text-xs font-semibold uppercase tracking-widest px-1 mb-1 mt-1">PPID</p>
+            <p class="text-white/40 text-xs font-semibold uppercase tracking-widest px-1 mb-1 mt-1">Dokumen</p>
 
-            {{-- ─── PPID (link tunggal — kategori dipilih via dropdown di dalam halaman) ─── --}}
-            <a href="{{ route('ppid.berkala.index') }}"
-               class="sidebar-link {{ $isPpidActive ? 'active' : '' }}"
-               id="sidebarPpid">
-                <i class="bi bi-shield-check" style="font-size: 1rem;"></i>
-                <span>PPID</span>
-            </a>
+            {{-- ─── Dropdown: Dokumen ─── --}}
+            <div>
+                {{-- Trigger --}}
+                <button
+                    type="button"
+                    id="sidebarDokumenTrigger"
+                    aria-expanded="{{ $isPpidActive ? 'true' : 'false' }}"
+                    aria-controls="sidebarDokumenMenu"
+                    onclick="toggleSidebarGroup(this)"
+                    class="sidebar-group-trigger {{ $isPpidActive ? 'group-active' : '' }}"
+                >
+                    <i class="bi bi-folder2-open" style="font-size: 1rem;"></i>
+                    <span>Dokumen</span>
+                    <i class="bi bi-chevron-right sidebar-arrow"></i>
+                </button>
+
+                {{-- Submenu --}}
+                <div
+                    id="sidebarDokumenMenu"
+                    class="sidebar-submenu {{ $isPpidActive ? 'submenu-open' : '' }}"
+                    role="region"
+                    aria-labelledby="sidebarDokumenTrigger"
+                >
+                    <div class="sidebar-submenu-inner">
+
+                        {{-- PPID (kategori dipilih via dropdown di dalam halaman) --}}
+                        <a href="{{ route('ppid.berkala.index') }}"
+                           class="sidebar-sublink {{ $isPpidActive ? 'active' : '' }}">
+                            <i class="bi bi-shield-check"></i>
+                            <span>PPID</span>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
 
         </nav>
 

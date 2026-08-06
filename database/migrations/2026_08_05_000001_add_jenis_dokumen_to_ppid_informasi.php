@@ -12,8 +12,8 @@ return new class extends Migration
      * id_jenis_dokumen — foreign key ke tabel jenis_dokumen (sudah ada di DB).
      *   Nullable agar data existing tidak rusak saat migrate.
      *   nullOnDelete: jika jenis_dokumen dihapus, kolom ini di-set null.
-     *   Pakai integer biasa (bukan unsignedBigInteger) karena kolom `id`
-     *   di tabel jenis_dokumen bertipe int(11), harus match persis.
+     *   Pakai unsignedBigInteger karena kolom `id` di tabel jenis_dokumen
+     *   dibuat dengan $table->id() (BIGINT UNSIGNED), harus match persis.
      *
      * tahun — opsional; dibutuhkan untuk data SAKIP yang melebur ke sini,
      *   tapi tidak semua kategori PPID memerlukan tahun.
@@ -25,7 +25,7 @@ return new class extends Migration
     {
         Schema::table('ppid_informasi', function (Blueprint $table) {
             // Referensi ke tabel jenis_dokumen (nullable untuk kompatibilitas data existing)
-            $table->integer('id_jenis_dokumen')->nullable()->after('kategori');
+            $table->unsignedBigInteger('id_jenis_dokumen')->nullable()->after('kategori');
             $table->foreign('id_jenis_dokumen')
                   ->references('id')
                   ->on('jenis_dokumen')

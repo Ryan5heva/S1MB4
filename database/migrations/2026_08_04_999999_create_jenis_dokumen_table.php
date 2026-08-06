@@ -6,20 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('jenis_dokumen', function (Blueprint $table) {
             $table->id();
+            $table->string('jenis_dokumen');
+            $table->string('klasifikasi');
+            $table->boolean('status')->default(1);
             $table->timestamps();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('jenis_dokumen');

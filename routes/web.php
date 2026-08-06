@@ -59,10 +59,10 @@ Route::middleware('auth')->group(function () {
     // PPID — Pengelolaan Informasi Publik
     // -------------------------------------------------------------------------
 
-    // Informasi Berkala
-    Route::resource('ppid/berkala', PpidInformasiBerkalaController::class)
+    // Informasi Berkala — jadi halaman utama /ppid
+    Route::resource('ppid', PpidInformasiBerkalaController::class)
         ->names('ppid.berkala')
-        ->parameters(['berkala' => 'ppid']);
+        ->parameters(['ppid' => 'ppid']);
 
     // Informasi Serta Merta (index, edit, update — semua perihal fixed)
     Route::resource('ppid/serta-merta', PpidInformasiSertaMertaController::class)
