@@ -55,6 +55,11 @@ class DatabaseSeeder extends Seeder
             );
         }
 
+        // ─── Referensi ───
+        $this->call([
+            JenisDokumenSeeder::class,
+        ]);
+
         // ─── PPID Seeders ───
         $this->call([
             PpidInformasiBerkalaSeeder::class,
