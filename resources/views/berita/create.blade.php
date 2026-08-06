@@ -43,9 +43,12 @@
             {{-- Konten --}}
             <div>
                 <label for="konten" class="form-label">Konten Berita <span class="text-red-500">*</span></label>
-                <textarea id="konten" name="konten" rows="8"
-                          placeholder="Tulis konten berita di sini..."
-                          class="form-input resize-y" required>{{ old('konten') }}</textarea>
+
+                {{-- Textarea tersembunyi — tetap mengirim name="konten" ke controller --}}
+                <textarea id="konten" name="konten" class="hidden">{{ old('konten') }}</textarea>
+
+                {{-- CKEditor akan di-mount di sini --}}
+                <div id="ck-editor-konten"></div>
             </div>
 
             {{-- Gambar --}}
@@ -81,6 +84,10 @@
 @endsection
 
 @push('scripts')
+
+{{-- CKEditor 5 — Konten Berita --}}
+@include('partials.ckeditor', ['fieldId' => 'konten'])
+
 <script>
     // Image preview
     const dropZone = document.getElementById('dropZone');

@@ -262,6 +262,7 @@
         }
         .article-body p {
             margin-bottom: 1.5rem;
+            text-align: inherit; /* ← preserve inline style dari CKEditor (justify, center, dll) */
         }
         .article-body p:last-child {
             margin-bottom: 0;
@@ -479,13 +480,9 @@
         </div>
     @endif
 
-    {{-- Article Body --}}
+    {{-- Article Body — HTML dari CKEditor, render apa adanya --}}
     <div class="article-body" id="articleBody">
-        @foreach(explode("\n", $berita->konten) as $paragraph)
-            @if(trim($paragraph) !== '')
-                <p>{{ $paragraph }}</p>
-            @endif
-        @endforeach
+        {!! $berita->konten !!}
     </div>
 
     {{-- Article Footer --}}
