@@ -14,27 +14,8 @@
         {{-- Gambar saat ini --}}
         <div>
             <label class="form-label">Gambar Saat Ini</label>
-            <img src="{{ Storage::url($slider->gambar) }}" alt="{{ $slider->judul }}"
+            <img src="{{ Storage::url($slider->gambar) }}" alt="Slider #{{ $slider->id }}"
                  class="w-full max-h-56 object-cover rounded-lg border border-gray-200">
-        </div>
-
-        {{-- Judul --}}
-        <div>
-            <label class="form-label">Judul <span class="text-red-500">*</span></label>
-            <input type="text" name="judul" value="{{ old('judul', $slider->judul) }}"
-                   class="form-input" placeholder="Judul banner" required>
-            @error('judul')
-                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-            @enderror
-        </div>
-
-        {{-- Deskripsi --}}
-        <div>
-            <label class="form-label">Deskripsi</label>
-            <textarea name="deskripsi" rows="3" class="form-input" placeholder="Deskripsi singkat (opsional)">{{ old('deskripsi', $slider->deskripsi) }}</textarea>
-            @error('deskripsi')
-                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
-            @enderror
         </div>
 
         {{-- Gambar baru (opsional) --}}

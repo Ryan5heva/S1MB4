@@ -8,22 +8,25 @@ use Illuminate\Foundation\Http\FormRequest;
 class StoreSliderRequest extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Hanya user yang sudah login yang boleh mengupload gambar slider.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
-     * Get the validation rules that apply to the request.
+     * Aturan validasi untuk upload gambar slider.
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
         return [
-            //
+            'url_tujuan' => ['nullable', 'url', 'max:255'],
+            'gambar'     => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'urutan'     => ['nullable', 'integer', 'min:0'],
         ];
     }
 }
+

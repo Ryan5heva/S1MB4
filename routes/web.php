@@ -111,8 +111,12 @@ Route::middleware('auth')->group(function () {
     // -------------------------------------------------------------------------
     // Slider — Banner untuk halaman publik
     // -------------------------------------------------------------------------
+    Route::patch('slider/{slider}/toggle-status', [SliderController::class, 'toggleStatus'])
+        ->name('slider.toggle-status');
+
     Route::resource('slider', SliderController::class)
         ->except(['show']);
+
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');

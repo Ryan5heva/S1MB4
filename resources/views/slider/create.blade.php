@@ -5,10 +5,19 @@
 @section('page-subtitle', 'Unggah gambar baru ke galeri')
 
 @section('content')
-<div class="bg-white rounded-xl border border-gray-100 p-6 max-w-lg" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+<div class="bg-white rounded-xl border border-gray-100 p-6" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
 
     <form action="{{ route('slider.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
         @csrf
+
+        {{-- URL Tujuan --}}
+        <div>
+            <label class="form-label">URL Tujuan <span class="text-gray-400 font-normal">(opsional)</span></label>
+            <input type="url" name="url_tujuan" value="{{ old('url_tujuan') }}" class="form-input" placeholder="https://contoh.com (opsional, klik gambar akan menuju URL ini)">
+            @error('url_tujuan')
+                <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
+            @enderror
+        </div>
 
         {{-- Gambar --}}
         <div>
