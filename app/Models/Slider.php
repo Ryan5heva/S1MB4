@@ -10,10 +10,7 @@ class Slider extends Model
     use HasFactory;
 
     protected $fillable = [
-        'judul',
-        'deskripsi',
         'gambar',
-        'url_tujuan',
         'urutan',
         'status',
         'user_id',
@@ -24,7 +21,7 @@ class Slider extends Model
     ];
 
     /**
-     * Relasi ke user yang menambahkan/mengubah slider ini.
+     * Relasi ke user yang mengunggah gambar ini.
      */
     public function user()
     {
@@ -32,10 +29,10 @@ class Slider extends Model
     }
 
     /**
-     * Scope: hanya slider yang aktif, urut sesuai kolom 'urutan'.
-     * Dipakai untuk menampilkan banner di halaman publik.
+     * Scope: hanya gambar yang dicentang (status aktif), urut sesuai kolom 'urutan'.
+     * Dipakai untuk menampilkan slider di halaman publik.
      */
-    public function scopeAktif($query)
+    public function scopeTampil($query)
     {
         return $query->where('status', true)->orderBy('urutan')->orderBy('id');
     }

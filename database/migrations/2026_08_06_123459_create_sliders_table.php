@@ -10,12 +10,9 @@ return new class extends Migration
     {
         Schema::create('sliders', function (Blueprint $table) {
             $table->id();
-            $table->string('judul');
-            $table->text('deskripsi')->nullable();
-            $table->string('gambar');                 // path file gambar (disk: public)
-            $table->string('url_tujuan')->nullable();  // link saat banner diklik (opsional)
+            $table->string('gambar');                  // path file gambar (disk: public)
             $table->unsignedInteger('urutan')->default(0);
-            $table->boolean('status')->default(true);  // true = aktif/tampil, false = nonaktif
+            $table->boolean('status')->default(false);  // true = dicentang, tampil di web publik
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
