@@ -53,8 +53,7 @@
     {{-- ─── Navigasi Menu ─── --}}
     @include('partials.sidebar.menu')
 
-    {{-- ─── Setting (Admin & Super Admin saja) ─── --}}
-    @if(!Auth::user()->isOperator())
+    {{-- ─── Setting (semua role) ─── --}}
     <div class="px-4 pb-2" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.5rem;">
         <a href="{{ route('settings.index') }}"
            class="sidebar-link {{ $isSettingsActive ? 'active' : '' }}">
@@ -62,7 +61,6 @@
             <span>Setting</span>
         </a>
     </div>
-    @endif
 
     {{-- ─── User Info ─── --}}
     @include('partials.sidebar.user-info')

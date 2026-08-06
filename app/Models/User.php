@@ -82,6 +82,15 @@ class User extends Authenticatable
     }
 
     /**
+     * Cek apakah pengguna dapat melihat Riwayat Aktivitas.
+     * Super Admin dan Admin dapat, Operator tidak.
+     */
+    public function canViewActivityLog(): bool
+    {
+        return in_array($this->role, ['super_admin', 'admin']);
+    }
+
+    /**
      * Mendapatkan label role yang ramah untuk ditampilkan.
      */
     public function roleName(): string

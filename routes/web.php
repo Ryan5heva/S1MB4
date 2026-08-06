@@ -58,8 +58,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/riwayat', [ActivityLogController::class, 'index'])->name('riwayat.index');
     Route::delete('/riwayat/{activityLog}', [ActivityLogController::class, 'destroy'])->name('riwayat.destroy');
 
-    // Setting — gabungan Riwayat Aktivitas + Kelola Pengguna
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    // Setting — Email, Password, Riwayat Aktivitas (role-conditional), Kelola Pengguna (Super Admin)
+    Route::get('/settings',          [SettingsController::class, 'index'])->name('settings.index');
+    Route::post('/settings/email',   [SettingsController::class, 'updateEmail'])->name('settings.updateEmail');
+    Route::post('/settings/password',[SettingsController::class, 'updatePassword'])->name('settings.updatePassword');
 
     // -------------------------------------------------------------------------
     // PPID — Pengelolaan Informasi Publik
