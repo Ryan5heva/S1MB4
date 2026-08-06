@@ -365,6 +365,9 @@
             // Dropdown "Dokumen" aktif jika salah satu dari PPID atau Jenis Dokumen aktif
             $isDokumenActive    = $isPpidGroup || $isJenisDokumen;
 
+            // Slider — banner/carousel di halaman publik
+            $isSliderActive     = request()->routeIs('slider.*');
+
             // Setting — aktif jika di halaman settings, riwayat, atau users
             $isSettingsActive   = request()->routeIs('settings.*')
                                || request()->routeIs('riwayat.*')
@@ -474,6 +477,16 @@
                     </div>
                 </div>
             </div>
+
+            <hr class="sidebar-divider">
+            <p class="text-white/40 text-xs font-semibold uppercase tracking-widest px-1 mb-1 mt-1">Tampilan</p>
+
+            {{-- ─── Slider ─── --}}
+            <a href="{{ route('slider.index') }}"
+               class="sidebar-link {{ $isSliderActive ? 'active' : '' }}">
+                <i class="bi bi-images" style="font-size: 1rem;"></i>
+                <span>Slider</span>
+            </a>
 
         </nav>
 

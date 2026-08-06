@@ -15,6 +15,7 @@ use App\Http\Controllers\PpidLaporanAksesInformasiController;
 use App\Http\Controllers\SakipRbController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\JenisDokumenController;
+use App\Http\Controllers\SliderController;
 
 /*
 |--------------------------------------------------------------------------
@@ -106,6 +107,12 @@ Route::middleware('auth')->group(function () {
     Route::resource('jenis-dokumen', JenisDokumenController::class)
         ->except(['show'])
         ->parameters(['jenis-dokumen' => 'jenis_dokumen']);
+
+    // -------------------------------------------------------------------------
+    // Slider — Banner untuk halaman publik
+    // -------------------------------------------------------------------------
+    Route::resource('slider', SliderController::class)
+        ->except(['show']);
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
