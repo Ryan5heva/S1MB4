@@ -13,6 +13,7 @@ use App\Http\Controllers\PpidInformasiSetiapSaatController;
 use App\Http\Controllers\PpidInformasiDikecualikanController;
 use App\Http\Controllers\PpidLaporanAksesInformasiController;
 use App\Http\Controllers\SakipRbController;
+use App\Http\Controllers\SettingsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -55,12 +56,16 @@ Route::middleware('auth')->group(function () {
     Route::get('/riwayat', [ActivityLogController::class, 'index'])->name('riwayat.index');
     Route::delete('/riwayat/{activityLog}', [ActivityLogController::class, 'destroy'])->name('riwayat.destroy');
 
+    // Setting — gabungan Riwayat Aktivitas + Kelola Pengguna
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+
     // -------------------------------------------------------------------------
     // PPID — Pengelolaan Informasi Publik
     // -------------------------------------------------------------------------
 
     // Informasi Berkala — jadi halaman utama /ppid
     Route::resource('ppid', PpidInformasiBerkalaController::class)
+        ->except(['show'])
         ->names('ppid.berkala')
         ->parameters(['ppid' => 'ppid']);
 

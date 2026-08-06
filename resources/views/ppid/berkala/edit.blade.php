@@ -5,7 +5,7 @@
 @section('page-subtitle', ($ppid->jenisDokumen?->jenis_dokumen ?? $ppid->kategori ?? 'PPID') . ' — ' . Str::limit($ppid->nama_informasi, 60))
 
 @section('content')
-<div class="max-w-2xl">
+<div>
 
     {{-- Back --}}
     <div class="mb-4">

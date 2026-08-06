@@ -5,7 +5,7 @@
 @section('page-subtitle', 'SAKIP-RB — Edit dokumen yang sudah ada')
 
 @section('content')
-<div class="max-w-2xl">
+<div>
 
     {{-- Back --}}
     <div class="mb-4">

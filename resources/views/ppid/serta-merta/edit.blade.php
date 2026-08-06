@@ -5,7 +5,7 @@
 @section('page-subtitle', 'PPID Informasi Serta Merta')
 
 @section('content')
-<div class="max-w-2xl">
+<div>
 
     {{-- Back --}}
     <div class="mb-4">

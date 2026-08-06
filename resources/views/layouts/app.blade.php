@@ -348,10 +348,8 @@
              */
             $isKelolaDanBerita  = request()->routeIs('berita.*');
             $isKelolaVideo      = request()->routeIs('video.*');
-            $isKelolaUsers      = request()->routeIs('users.*');
-            $isKelolaRiwayat    = request()->routeIs('riwayat.*');
-            // Pengguna berdiri sendiri, tidak termasuk dalam dropdown Kelola
-            $isKelolaActive     = $isKelolaDanBerita || $isKelolaVideo || $isKelolaRiwayat;
+            // Kelola dropdown tidak lagi termasuk Riwayat/Users — keduanya pindah ke Setting
+            $isKelolaActive     = $isKelolaDanBerita || $isKelolaVideo;
 
             // PPID — satu link tunggal (kategori dipilih via dropdown DI DALAM halaman)
             $isPpidBerkala      = request()->routeIs('ppid.berkala.*');
@@ -360,6 +358,11 @@
             $isPpidDikecualikan = request()->routeIs('ppid.dikecualikan.*');
             $isPpidLaporanAkses = request()->routeIs('ppid.laporan_akses_informasi.*');
             $isPpidActive       = $isPpidBerkala || $isPpidSertaMerta || $isPpidSetiapSaat || $isPpidDikecualikan || $isPpidLaporanAkses;
+
+            // Setting — aktif jika di halaman settings, riwayat, atau users
+            $isSettingsActive   = request()->routeIs('settings.*')
+                               || request()->routeIs('riwayat.*')
+                               || request()->routeIs('users.*');
         @endphp
 
         <nav class="flex-1 px-4 py-5 flex flex-col gap-1">
@@ -414,27 +417,9 @@
                             <span>Video</span>
                         </a>
 
-                        {{-- Riwayat Aktivitas (non-operator) --}}
-                        @if(!Auth::user()->isOperator())
-                        <a href="{{ route('riwayat.index') }}"
-                           class="sidebar-sublink {{ $isKelolaRiwayat ? 'active' : '' }}">
-                            <i class="bi bi-clock-history"></i>
-                            <span>Riwayat Aktivitas</span>
-                        </a>
-                        @endif
-
                     </div>
                 </div>
             </div>
-
-            {{-- ─── Pengguna (standalone, super admin saja) ─── --}}
-            @if(Auth::user()->isSuperAdmin())
-            <a href="{{ route('users.index') }}"
-               class="sidebar-link {{ $isKelolaUsers ? 'active' : '' }}">
-                <i class="bi bi-people" style="font-size: 1rem;"></i>
-                <span>Pengguna</span>
-            </a>
-            @endif
 
             <hr class="sidebar-divider">
             <p class="text-white/40 text-xs font-semibold uppercase tracking-widest px-1 mb-1 mt-1">Dokumen</p>
@@ -476,6 +461,17 @@
             </div>
 
         </nav>
+
+        {{-- ─── Setting (Admin & Super Admin) ─── --}}
+        @if(!Auth::user()->isOperator())
+        <div class="px-4 pb-2" style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 0.5rem;">
+            <a href="{{ route('settings.index') }}"
+               class="sidebar-link {{ $isSettingsActive ? 'active' : '' }}">
+                <i class="bi bi-gear" style="font-size: 1rem;"></i>
+                <span>Setting</span>
+            </a>
+        </div>
+        @endif
 
         {{-- ─── User Info ─── --}}
         <div class="px-4 py-4 border-t border-white/10">
