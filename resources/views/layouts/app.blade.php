@@ -357,7 +357,13 @@
             $isPpidSetiapSaat   = request()->routeIs('ppid.setiap_saat.*');
             $isPpidDikecualikan = request()->routeIs('ppid.dikecualikan.*');
             $isPpidLaporanAkses = request()->routeIs('ppid.laporan_akses_informasi.*');
-            $isPpidActive       = $isPpidBerkala || $isPpidSertaMerta || $isPpidSetiapSaat || $isPpidDikecualikan || $isPpidLaporanAkses;
+            $isPpidGroup        = $isPpidBerkala || $isPpidSertaMerta || $isPpidSetiapSaat || $isPpidDikecualikan || $isPpidLaporanAkses;
+
+            // Jenis Dokumen — master data, ikut dalam dropdown Dokumen
+            $isJenisDokumen     = request()->routeIs('jenis-dokumen.*');
+
+            // Dropdown "Dokumen" aktif jika salah satu dari PPID atau Jenis Dokumen aktif
+            $isDokumenActive    = $isPpidGroup || $isJenisDokumen;
 
             // Setting — aktif jika di halaman settings, riwayat, atau users
             $isSettingsActive   = request()->routeIs('settings.*')
@@ -430,10 +436,10 @@
                 <button
                     type="button"
                     id="sidebarDokumenTrigger"
-                    aria-expanded="{{ $isPpidActive ? 'true' : 'false' }}"
+                    aria-expanded="{{ $isDokumenActive ? 'true' : 'false' }}"
                     aria-controls="sidebarDokumenMenu"
                     onclick="toggleSidebarGroup(this)"
-                    class="sidebar-group-trigger {{ $isPpidActive ? 'group-active' : '' }}"
+                    class="sidebar-group-trigger {{ $isDokumenActive ? 'group-active' : '' }}"
                 >
                     <i class="bi bi-folder2-open" style="font-size: 1rem;"></i>
                     <span>Dokumen</span>
@@ -443,7 +449,7 @@
                 {{-- Submenu --}}
                 <div
                     id="sidebarDokumenMenu"
-                    class="sidebar-submenu {{ $isPpidActive ? 'submenu-open' : '' }}"
+                    class="sidebar-submenu {{ $isDokumenActive ? 'submenu-open' : '' }}"
                     role="region"
                     aria-labelledby="sidebarDokumenTrigger"
                 >
@@ -451,10 +457,19 @@
 
                         {{-- PPID (kategori dipilih via dropdown di dalam halaman) --}}
                         <a href="{{ route('ppid.berkala.index') }}"
-                           class="sidebar-sublink {{ $isPpidActive ? 'active' : '' }}">
+                           class="sidebar-sublink {{ $isPpidGroup ? 'active' : '' }}">
                             <i class="bi bi-shield-check"></i>
                             <span>PPID</span>
                         </a>
+
+                        {{-- Jenis Dokumen (master data, super admin saja) --}}
+                        @if(Auth::user()->isSuperAdmin())
+                        <a href="{{ route('jenis-dokumen.index') }}"
+                           class="sidebar-sublink {{ $isJenisDokumen ? 'active' : '' }}">
+                            <i class="bi bi-tags"></i>
+                            <span>Jenis Dokumen</span>
+                        </a>
+                        @endif
 
                     </div>
                 </div>

@@ -14,6 +14,7 @@ use App\Http\Controllers\PpidInformasiDikecualikanController;
 use App\Http\Controllers\PpidLaporanAksesInformasiController;
 use App\Http\Controllers\SakipRbController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\JenisDokumenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -98,6 +99,13 @@ Route::middleware('auth')->group(function () {
     // -------------------------------------------------------------------------
     Route::resource('sakip-rb', SakipRbController::class)
         ->parameters(['sakip-rb' => 'sakipRb']);
+
+    // -------------------------------------------------------------------------
+    // Jenis Dokumen — Master data kategori dokumen PPID
+    // -------------------------------------------------------------------------
+    Route::resource('jenis-dokumen', JenisDokumenController::class)
+        ->except(['show'])
+        ->parameters(['jenis-dokumen' => 'jenis_dokumen']);
 
     // Logout
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
