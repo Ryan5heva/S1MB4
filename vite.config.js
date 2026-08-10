@@ -20,6 +20,11 @@ export default defineConfig({
             ],
         }),
         tailwindcss(),
+
+        // ── Catatan: TinyMCE self-hosted ─────────────────────────────────────
+        // Asset TinyMCE (skins, plugins, icons, dll) disalin dari node_modules
+        // ke public/tinymce lewat npm prebuild/predev hook (scripts/copy-tinymce.mjs).
+        // Tidak perlu vite plugin tambahan untuk ini.
     ],
     server: {
         watch: {

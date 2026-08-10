@@ -44,11 +44,8 @@
             <div>
                 <label for="konten" class="form-label">Konten Berita <span class="text-red-500">*</span></label>
 
-                {{-- Textarea tersembunyi — tetap mengirim name="konten" ke controller --}}
-                <textarea id="konten" name="konten" class="hidden">{{ old('konten') }}</textarea>
-
-                {{-- CKEditor akan di-mount di sini --}}
-                <div id="ck-editor-konten"></div>
+                {{-- TinyMCE mount langsung ke textarea; value otomatis terkirim ke controller --}}
+                <textarea id="konten" name="konten">{{ old('konten') }}</textarea>
             </div>
 
             {{-- Gambar --}}
@@ -85,8 +82,8 @@
 
 @push('scripts')
 
-{{-- CKEditor 5 — Konten Berita --}}
-@include('partials.ckeditor', ['fieldId' => 'konten'])
+{{-- TinyMCE — Konten Berita --}}
+@include('partials.tinymce', ['fieldId' => 'konten'])
 
 <script>
     // Image preview
