@@ -5,7 +5,7 @@
 @section('page-subtitle', 'Tambahkan kategori dokumen baru untuk PPID')
 
 @section('content')
-<div class="bg-white rounded-xl border border-gray-100 p-6 max-w-2xl" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+<div class="bg-white rounded-xl border border-gray-100 p-6" style="box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
 
     <form action="{{ route('jenis-dokumen.store') }}" method="POST" class="space-y-5">
         @csrf
