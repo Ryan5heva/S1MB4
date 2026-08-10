@@ -32,7 +32,7 @@ class JenisDokumenController extends Controller
     {
         $validated = $request->validate([
             'jenis_dokumen' => 'required|string|max:255',
-            'klasifikasi'   => 'required|string|max:100',
+            'klasifikasi'   => 'required|string|max:255',
             'status'        => 'required|in:0,1',
         ]);
 
@@ -58,7 +58,7 @@ class JenisDokumenController extends Controller
     {
         $validated = $request->validate([
             'jenis_dokumen' => 'required|string|max:255',
-            'klasifikasi'   => 'required|string|max:100',
+            'klasifikasi'   => 'required|string|max:255',
             'status'        => 'required|in:0,1',
         ]);
 

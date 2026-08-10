@@ -22,11 +22,21 @@
 
         <div>
             <label class="form-label">Klasifikasi</label>
-            <select name="klasifikasi" class="form-input" required>
-                <option value="Berkala" @selected(old('klasifikasi', $jenisDokumen->klasifikasi) == 'Berkala')>Berkala</option>
-                <option value="Dokumen" @selected(old('klasifikasi', $jenisDokumen->klasifikasi) == 'Dokumen')>Dokumen</option>
-                <option value="sakip" @selected(old('klasifikasi', $jenisDokumen->klasifikasi) == 'sakip')>SAKIP</option>
-            </select>
+            <input
+                type="text"
+                name="klasifikasi"
+                list="klasifikasi-options"
+                value="{{ old('klasifikasi', $jenisDokumen->klasifikasi) }}"
+                class="form-input"
+                placeholder="Pilih atau ketik klasifikasi..."
+                required
+                autocomplete="off"
+            >
+            <datalist id="klasifikasi-options">
+                <option value="Berkala">
+                <option value="Dokumen">
+                <option value="SAKIP">
+            </datalist>
             @error('klasifikasi')
                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
             @enderror
