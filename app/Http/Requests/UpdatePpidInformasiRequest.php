@@ -28,7 +28,7 @@ class UpdatePpidInformasiRequest extends FormRequest
                 'nullable',
                 'file',
                 'mimes:pdf,doc,docx,xls,xlsx,ppt,pptx',
-                'max:10240',
+                'max:1024',
             ],
 
             'url'          => [
@@ -52,7 +52,7 @@ class UpdatePpidInformasiRequest extends FormRequest
             'jenis.required'   => 'Jenis informasi wajib dipilih.',
             'jenis.in'         => 'Jenis informasi tidak valid.',
             'file.mimes'       => 'Format file tidak didukung. Gunakan: PDF, DOC, DOCX, XLS, XLSX, PPT, PPTX.',
-            'file.max'         => 'Ukuran file tidak boleh melebihi 10 MB.',
+            'file.max'         => 'Ukuran file tidak boleh melebihi 1 MB.',
             'url.required_if'  => 'URL wajib diisi jika jenis adalah Link.',
             'url.url'          => 'Format URL tidak valid (harus diawali http:// atau https://).',
             'status.required'  => 'Status publikasi wajib dipilih.',
