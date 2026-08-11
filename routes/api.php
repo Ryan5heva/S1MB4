@@ -2,10 +2,19 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+<<<<<<< HEAD
 use App\Http\Controllers\PpidPublicApiController;
 use App\Http\Controllers\BeritaPublicApiController;
 use App\Http\Controllers\SliderPublicApiController;
 use App\Http\Controllers\SakipRbPublicApiController;
+=======
+use App\Http\Controllers\SliderController;
+use App\Http\Controllers\PpidInformasiBerkalaController;
+use App\Http\Controllers\PpidInformasiDikecualikanController;
+use App\Http\Controllers\PpidInformasiSertaMertaController;
+use App\Http\Controllers\PpidInformasiSetiapSaatController;
+use App\Http\Controllers\PpidLaporanAksesInformasiController;
+>>>>>>> 508bd1e72a6243ca55d55a01adf524ca5b3f3712
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +25,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+<<<<<<< HEAD
 /*
 |--------------------------------------------------------------------------
 | API Routes — PPID Publik (tanpa autentikasi)
@@ -56,3 +66,15 @@ Route::get('/sliders', [SliderPublicApiController::class, 'index']);
 |--------------------------------------------------------------------------
 */
 Route::get('/sakip-rb', [SakipRbPublicApiController::class, 'index']);
+=======
+// Public API routes
+Route::get('/sliders', [SliderController::class, 'apiIndex']);
+
+Route::prefix('ppid')->group(function () {
+    Route::get('/berkala', [PpidInformasiBerkalaController::class, 'apiIndex']);
+    Route::get('/dikecualikan', [PpidInformasiDikecualikanController::class, 'apiIndex']);
+    Route::get('/serta-merta', [PpidInformasiSertaMertaController::class, 'apiIndex']);
+    Route::get('/setiap-saat', [PpidInformasiSetiapSaatController::class, 'apiIndex']);
+    Route::get('/laporan-akses-informasi', [PpidLaporanAksesInformasiController::class, 'apiIndex']);
+});
+>>>>>>> 508bd1e72a6243ca55d55a01adf524ca5b3f3712

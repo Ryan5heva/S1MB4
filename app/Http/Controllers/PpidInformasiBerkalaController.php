@@ -204,4 +204,31 @@ class PpidInformasiBerkalaController extends Controller
             ->route('ppid.berkala.index', ['jenis_dokumen_id' => $jenisDokumenId])
             ->with('success', 'Data "' . $nama . '" berhasil dihapus.');
     }
+
+    /**
+     * API: Kembalikan semua item PPID Berkala yang aktif untuk web publik.
+     * Dikelompokkan berdasarkan jenis_dokumen (kategori).
+     */
+    public function apiIndex(): \Illuminate\Http\JsonResponse
+    {
+        $items = PpidInformasi::with('jenisDokumen')
+            ->where('jenis_menu', 'berkala')
+            ->where('status', true)
+            ->orderBy('urutan')
+            ->orderBy('id')
+            ->get()
+            ->map(fn($i) => [
+                'id'             => $i->id,
+                'nama_informasi' => $i->nama_informasi,
+                'deskripsi'      => $i->deskripsi,
+                'jenis'          => $i->jenis,
+                'file'           => $i->file ? asset('storage/' . $i->file) : null,
+                'url'            => $i->url,
+                'tahun'          => $i->tahun,
+                'published_at'   => $i->published_at?->format('Y-m-d'),
+                'jenis_dokumen'  => $i->jenisDokumen?->jenis_dokumen,
+            ]);
+
+        return response()->json($items);
+    }
 }

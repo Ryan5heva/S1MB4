@@ -127,4 +127,22 @@ class SliderController extends Controller
             ->route('slider.index')
             ->with('success', 'Gambar berhasil dihapus dari galeri.');
     }
+
+    /**
+     * API: Kembalikan daftar slider yang aktif (status = true) untuk web publik.
+     * Gambar dikonversi ke URL lengkap agar bisa diakses dari frontend.
+     */
+    public function apiIndex(): \Illuminate\Http\JsonResponse
+    {
+        $sliders = Slider::tampil()
+            ->get()
+            ->map(fn($s) => [
+                'id'         => $s->id,
+                'gambar'     => $s->gambar ? asset('storage/' . $s->gambar) : null,
+                'url_tujuan' => $s->url_tujuan,
+                'urutan'     => $s->urutan,
+            ]);
+
+        return response()->json($sliders);
+    }
 }
