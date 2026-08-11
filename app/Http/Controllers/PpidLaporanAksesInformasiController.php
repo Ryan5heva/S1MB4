@@ -102,4 +102,26 @@ class PpidLaporanAksesInformasiController extends Controller
             ->route('ppid.laporan_akses_informasi.index')
             ->with('success', 'Dokumen/link "' . Str::limit($ppid->nama_informasi, 50) . '" berhasil diperbarui.');
     }
+
+    /**
+     * API: Kembalikan semua item Laporan Akses Informasi untuk web publik.
+     */
+    public function apiIndex(): \Illuminate\Http\JsonResponse
+    {
+        $items = PpidInformasi::where('jenis_menu', 'laporan_akses_informasi')
+            ->where('status', true)
+            ->orderBy('urutan')
+            ->get()
+            ->map(fn($i) => [
+                'id'             => $i->id,
+                'nama_informasi' => $i->nama_informasi,
+                'deskripsi'      => $i->deskripsi,
+                'jenis'          => $i->jenis,
+                'file'           => $i->file ? asset('storage/' . $i->file) : null,
+                'url'            => $i->url,
+                'published_at'   => $i->published_at?->format('Y-m-d'),
+            ]);
+
+        return response()->json($items);
+    }
 }

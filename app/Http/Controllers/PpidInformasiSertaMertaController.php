@@ -102,4 +102,26 @@ class PpidInformasiSertaMertaController extends Controller
             ->route('ppid.serta_merta.index')
             ->with('success', 'Dokumen/link "' . Str()->limit($ppid->nama_informasi, 50) . '" berhasil diperbarui.');
     }
+
+    /**
+     * API: Kembalikan semua item Informasi Serta Merta untuk web publik.
+     */
+    public function apiIndex(): \Illuminate\Http\JsonResponse
+    {
+        $items = PpidInformasi::where('jenis_menu', 'serta_merta')
+            ->where('status', true)
+            ->orderBy('urutan')
+            ->get()
+            ->map(fn($i) => [
+                'id'             => $i->id,
+                'nama_informasi' => $i->nama_informasi,
+                'deskripsi'      => $i->deskripsi,
+                'jenis'          => $i->jenis,
+                'file'           => $i->file ? asset('storage/' . $i->file) : null,
+                'url'            => $i->url,
+                'published_at'   => $i->published_at?->format('Y-m-d'),
+            ]);
+
+        return response()->json($items);
+    }
 }

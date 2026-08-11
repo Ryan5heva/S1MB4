@@ -106,4 +106,26 @@ class PpidInformasiSetiapSaatController extends Controller
             ->route('ppid.setiap_saat.index')
             ->with('success', 'Dokumen/link "' . \Illuminate\Support\Str::limit($ppid->nama_informasi, 50) . '" berhasil diperbarui.');
     }
+
+    /**
+     * API: Kembalikan semua item Informasi Setiap Saat untuk web publik.
+     */
+    public function apiIndex(): \Illuminate\Http\JsonResponse
+    {
+        $items = PpidInformasi::where('jenis_menu', 'setiap_saat')
+            ->where('status', true)
+            ->orderBy('urutan')
+            ->get()
+            ->map(fn($i) => [
+                'id'             => $i->id,
+                'nama_informasi' => $i->nama_informasi,
+                'deskripsi'      => $i->deskripsi,
+                'jenis'          => $i->jenis,
+                'file'           => $i->file ? asset('storage/' . $i->file) : null,
+                'url'            => $i->url,
+                'published_at'   => $i->published_at?->format('Y-m-d'),
+            ]);
+
+        return response()->json($items);
+    }
 }
