@@ -32,7 +32,7 @@ class StoreSakipRbRequest extends FormRequest
                 'required_if:jenis_input,dokumen',
                 'file',
                 'mimes:pdf,doc,docx,jpg,jpeg,png',
-                'max:5120',
+                'max:500',
             ],
 
             'url'           => [
@@ -57,7 +57,7 @@ class StoreSakipRbRequest extends FormRequest
             'jenis_input.in'         => 'Jenis input tidak valid.',
             'file.required_if'       => 'File dokumen wajib diunggah jika memilih jenis Dokumen.',
             'file.mimes'             => 'Format file tidak didukung. Gunakan: PDF, DOC, DOCX, JPG, JPEG, PNG.',
-            'file.max'               => 'Ukuran file tidak boleh melebihi 5 MB.',
+            'file.max'               => 'Ukuran file tidak boleh melebihi 500 KB.',
             'url.required_if'        => 'URL wajib diisi jika memilih jenis Link.',
             'url.url'                => 'Format URL tidak valid (harus diawali http:// atau https://).',
         ];

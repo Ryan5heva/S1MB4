@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Requests;
 
@@ -24,7 +24,7 @@ class StoreSliderRequest extends FormRequest
     {
         return [
             'url_tujuan' => ['nullable', 'url', 'max:255'],
-            'gambar'     => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'gambar'     => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1024'],
             'urutan'     => ['nullable', 'integer', 'min:0'],
         ];
     }

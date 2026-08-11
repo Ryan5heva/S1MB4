@@ -23,7 +23,7 @@
         <div>
             <label class="form-label">Gambar <span class="text-red-500">*</span></label>
             <input type="file" name="gambar" accept="image/*" class="form-input" required>
-            <p class="text-xs text-gray-400 mt-1">Format JPG/PNG/WEBP, maksimal 2MB. Disarankan rasio lebar (misal 1920x700px).</p>
+            <p class="text-xs text-gray-400 mt-1">Format JPG/PNG/WEBP, maksimal 1MB. Disarankan rasio lebar (misal 1920x700px).</p>
             @error('gambar')
                 <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
             @enderror

@@ -65,7 +65,7 @@ class SliderController extends Controller
     {
         $validated = $request->validate([
             'url_tujuan' => ['nullable', 'url', 'max:255'],
-            'gambar'     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'gambar'     => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:1024'],
             'urutan'     => ['nullable', 'integer', 'min:0'],
             'status'     => ['required', 'boolean'],
         ]);

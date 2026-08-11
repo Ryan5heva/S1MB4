@@ -22,7 +22,7 @@
         <div>
             <label class="form-label">Ganti Gambar</label>
             <input type="file" name="gambar" accept="image/*" class="form-input">
-            <p class="text-xs text-gray-400 mt-1">Kosongkan jika tidak ingin mengganti gambar. Format JPG/PNG/WEBP, maksimal 2MB.</p>
+            <p class="text-xs text-gray-400 mt-1">Kosongkan jika tidak ingin mengganti gambar. Format JPG/PNG/WEBP, maksimal 1MB.</p>
             @error('gambar')
                 <p class="text-xs text-red-500 mt-1">{{ $message }}</p>
             @enderror

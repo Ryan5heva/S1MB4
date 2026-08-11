@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
@@ -77,6 +78,9 @@ class UserController extends Controller
             'role'     => ['required', 'in:super_admin,admin,operator'],
         ]);
 
+        // Simpan email lama untuk deteksi perubahan
+        $oldEmail = $user->email;
+
         $data = [
             'name'  => $validated['name'],
             'email' => $validated['email'],
@@ -88,6 +92,22 @@ class UserController extends Controller
         }
 
         $user->update($data);
+
+        // Auto-logout jika user sedang mengedit akunnya SENDIRI
+        // dan ada perubahan pada email atau password
+        if (Auth::id() === $user->id) {
+            $emailChanged    = $oldEmail !== $validated['email'];
+            $passwordChanged = $request->filled('password');
+
+            if ($emailChanged || $passwordChanged) {
+                Auth::logout();
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+
+                return redirect()->route('login')
+                    ->with('success', 'Email/Password berhasil diubah. Silakan login kembali.');
+            }
+        }
 
         return redirect()->route('users.index')
             ->with('success', 'Data pengguna berhasil diperbarui.');

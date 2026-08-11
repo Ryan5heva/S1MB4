@@ -35,9 +35,9 @@ class BeritaController extends Controller
         $validated = $request->validate([
             'judul'  => ['required', 'string', 'max:255'],
             'konten' => ['required', 'string'],
-            'gambar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:1024'],
+            'gambar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:500'],
         ], [
-            'gambar.max' => 'Ukuran gambar tidak boleh lebih dari 1 MB.',
+            'gambar.max' => 'Ukuran gambar tidak boleh lebih dari 500 KB.',
         ]);
 
         $gambarPath = null;
@@ -90,9 +90,9 @@ class BeritaController extends Controller
         $validated = $request->validate([
             'judul'  => ['required', 'string', 'max:255'],
             'konten' => ['required', 'string'],
-            'gambar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:1024'],
+            'gambar' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:500'],
         ], [
-            'gambar.max' => 'Ukuran gambar tidak boleh lebih dari 1 MB.',
+            'gambar.max' => 'Ukuran gambar tidak boleh lebih dari 500 KB.',
         ]);
 
         $gambarPath = $beritum->gambar;

@@ -122,7 +122,7 @@
                      class="border-2 border-dashed border-gray-200 rounded-xl p-5 text-center cursor-pointer hover:border-teal-400 hover:bg-teal-50/30 transition-all">
                     <i class="bi bi-cloud-upload" style="font-size:1.75rem;color:#9ca3af;"></i>
                     <p class="text-sm text-gray-500 mt-1.5">Klik untuk memilih file</p>
-                    <p class="text-xs text-gray-400 mt-0.5">PDF, DOC, DOCX, JPG, JPEG, PNG — Maks. 5 MB</p>
+                    <p class="text-xs text-gray-400 mt-0.5">PDF, DOC, DOCX, JPG, JPEG, PNG — Maks. 500 KB</p>
                     <input type="file" id="file" name="file"
                            accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
                            class="hidden">

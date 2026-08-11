@@ -79,15 +79,29 @@
                 <div class="space-y-4">
                     <div>
                         <label for="password" class="form-label text-xs">Password Baru</label>
-                        <input type="password" id="password" name="password"
-                               placeholder="Minimal 8 karakter..."
-                               class="form-input">
+                        <div class="position-relative">
+                            <input type="password" id="password" name="password"
+                                   placeholder="Minimal 8 karakter..."
+                                   class="form-input" style="padding-right: 2.75rem;">
+                            <button type="button" id="togglePassword"
+                                    class="position-absolute top-50 translate-middle-y end-0 me-3 border-0 bg-transparent p-0 text-secondary"
+                                    style="line-height:1;" aria-label="Tampilkan/sembunyikan password">
+                                <i class="bi bi-eye" id="eyeIconPassword" style="font-size:1.1rem;"></i>
+                            </button>
+                        </div>
                     </div>
                     <div>
                         <label for="password_confirmation" class="form-label text-xs">Konfirmasi Password Baru</label>
-                        <input type="password" id="password_confirmation" name="password_confirmation"
-                               placeholder="Ulangi password baru..."
-                               class="form-input">
+                        <div class="position-relative">
+                            <input type="password" id="password_confirmation" name="password_confirmation"
+                                   placeholder="Ulangi password baru..."
+                                   class="form-input" style="padding-right: 2.75rem;">
+                            <button type="button" id="togglePasswordConfirm"
+                                    class="position-absolute top-50 translate-middle-y end-0 me-3 border-0 bg-transparent p-0 text-secondary"
+                                    style="line-height:1;" aria-label="Tampilkan/sembunyikan konfirmasi password">
+                                <i class="bi bi-eye" id="eyeIconConfirm" style="font-size:1.1rem;"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -106,3 +120,33 @@
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    // Toggle show/hide untuk field Password Baru
+    document.getElementById('togglePassword').addEventListener('click', function () {
+        const input = document.getElementById('password');
+        const icon  = document.getElementById('eyeIconPassword');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('bi-eye', 'bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('bi-eye-slash', 'bi-eye');
+        }
+    });
+
+    // Toggle show/hide untuk field Konfirmasi Password Baru
+    document.getElementById('togglePasswordConfirm').addEventListener('click', function () {
+        const input = document.getElementById('password_confirmation');
+        const icon  = document.getElementById('eyeIconConfirm');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.replace('bi-eye', 'bi-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.replace('bi-eye-slash', 'bi-eye');
+        }
+    });
+</script>
+@endpush
