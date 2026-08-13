@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 /**
  * Validasi untuk menambah data baru di PPID Informasi Berkala.
@@ -18,7 +19,13 @@ class StorePpidInformasiRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id_jenis_dokumen' => ['required', 'integer', 'exists:jenis_dokumen,id'],
+            // Wajib dari tabel jenis_dokumen dengan klasifikasi='Berkala'
+            // Validasi ini mencegah admin memilih kategori dari klasifikasi lain (Serta Merta, dll)
+            'id_jenis_dokumen' => [
+                'required',
+                'integer',
+                Rule::exists('jenis_dokumen', 'id')->where('klasifikasi', 'Berkala'),
+            ],
             'nama_informasi'   => ['required', 'string', 'max:255'],
             'deskripsi'        => ['nullable', 'string'],
             'tahun'            => ['nullable', 'integer', 'min:2000', 'max:' . (date('Y') + 5)],

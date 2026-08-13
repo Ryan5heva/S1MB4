@@ -23,8 +23,8 @@ class PpidInformasiBerkalaController extends Controller
      */
     public function index(Request $request): View
     {
-        // Semua jenis dokumen (untuk isi dropdown), urutkan by id asc
-        $jenisDokumenList = JenisDokumen::orderBy('id')->get();
+        // Hanya jenis dokumen berkategori 'Berkala' (untuk isi dropdown)
+        $jenisDokumenList = JenisDokumen::where('klasifikasi', 'Berkala')->orderBy('id')->get();
 
         // Tentukan id kategori aktif (dari query string atau default ke yang pertama)
         $defaultId        = $jenisDokumenList->first()?->id;
@@ -33,8 +33,10 @@ class PpidInformasiBerkalaController extends Controller
         // Kategori yang sedang aktif (untuk label judul & cek is_fixed)
         $jenisDokumenAktif = JenisDokumen::find($jenisDokumenId);
 
-        // Ambil semua item PPID untuk kategori ini, urutkan by urutan asc
-        $items = PpidInformasi::with('user')
+        // Ambil semua item PPID Berkala untuk kategori ini, urutkan by urutan asc
+        // Filter jenis_menu='berkala' ditambahkan agar tidak cross-contaminate dengan klasifikasi lain
+        $items = PpidInformasi::berkala()
+            ->with('user')
             ->where('id_jenis_dokumen', $jenisDokumenId)
             ->orderBy('urutan')
             ->orderBy('id')
@@ -51,7 +53,7 @@ class PpidInformasiBerkalaController extends Controller
      */
     public function create(Request $request): View
     {
-        $jenisDokumenList = JenisDokumen::orderBy('id')->get();
+        $jenisDokumenList = JenisDokumen::where('klasifikasi', 'Berkala')->orderBy('id')->get();
         $jenisDokumenId   = (int) $request->query('jenis_dokumen_id', $jenisDokumenList->first()?->id);
 
         return view('ppid.berkala.create', compact('jenisDokumenList', 'jenisDokumenId'));
@@ -105,7 +107,7 @@ class PpidInformasiBerkalaController extends Controller
     public function edit(PpidInformasi $ppid): View
     {
         $ppid->load(['user', 'jenisDokumen']);
-        $jenisDokumenList = JenisDokumen::orderBy('id')->get();
+        $jenisDokumenList = JenisDokumen::where('klasifikasi', 'Berkala')->orderBy('id')->get();
 
         return view('ppid.berkala.edit', compact('ppid', 'jenisDokumenList'));
     }

@@ -26,6 +26,7 @@ Route::get('/user', function (Request $request) {
 |--------------------------------------------------------------------------
 */
 Route::prefix('ppid')->group(function () {
+    Route::get('/klasifikasi',            [PpidPublicApiController::class, 'klasifikasi']);
     Route::get('/berkala',                [PpidPublicApiController::class, 'berkala']);
     Route::get('/serta-merta',            [PpidPublicApiController::class, 'sertaMerta']);
     Route::get('/setiap-saat',            [PpidPublicApiController::class, 'setiapSaat']);

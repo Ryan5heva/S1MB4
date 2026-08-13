@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\JenisDokumen;
 use App\Models\PpidInformasi;
+use App\Models\PpidKlasifikasi;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -142,6 +143,31 @@ class PpidPublicApiController extends Controller
             ->orderBy('urutan')
             ->get()
             ->map(fn ($item) => $this->mapItem($item));
+
+        return response()->json($items);
+    }
+
+    /**
+     * GET /api/ppid/klasifikasi
+     *
+     * Mengembalikan daftar klasifikasi PPID yang aktif untuk
+     * ditampilkan di dropdown navbar publik frontend.
+     *
+     * Response shape:
+     * [
+     *   { "label": "Informasi Berkala", "href": "/ppid/berkala", "urutan": 1 },
+     *   ...
+     * ]
+     *
+     * Diurutkan berdasarkan kolom `urutan` ascending.
+     * Hanya mengembalikan klasifikasi dengan aktif = true.
+     */
+    public function klasifikasi(): JsonResponse
+    {
+        $items = PpidKlasifikasi::aktif()
+            ->orderBy('urutan')
+            ->get()
+            ->map(fn ($k) => $k->toNavItem());
 
         return response()->json($items);
     }
