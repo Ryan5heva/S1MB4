@@ -27,6 +27,9 @@ class JenisDokumenController extends Controller
 
     /**
      * Simpan jenis dokumen baru.
+     *
+     * Kolom 'grup' di-derive otomatis dari nilai 'klasifikasi' melalui resolveGrup().
+     * Admin tidak perlu mengisi kolom grup secara terpisah.
      */
     public function store(Request $request)
     {
@@ -35,6 +38,8 @@ class JenisDokumenController extends Controller
             'klasifikasi'   => 'required|string|max:255',
             'status'        => 'required|in:0,1',
         ]);
+
+        $validated['grup'] = $this->resolveGrup($validated['klasifikasi']);
 
         JenisDokumen::create($validated);
 
@@ -53,6 +58,8 @@ class JenisDokumenController extends Controller
 
     /**
      * Perbarui jenis dokumen.
+     *
+     * Kolom 'grup' di-derive ulang dari nilai 'klasifikasi' yang diperbarui.
      */
     public function update(Request $request, JenisDokumen $jenisDokumen)
     {
@@ -61,6 +68,8 @@ class JenisDokumenController extends Controller
             'klasifikasi'   => 'required|string|max:255',
             'status'        => 'required|in:0,1',
         ]);
+
+        $validated['grup'] = $this->resolveGrup($validated['klasifikasi']);
 
         $jenisDokumen->update($validated);
 
@@ -87,5 +96,34 @@ class JenisDokumenController extends Controller
         return redirect()
             ->route('jenis-dokumen.index')
             ->with('success', 'Jenis dokumen berhasil dihapus.');
+    }
+
+    /**
+     * Petakan nilai klasifikasi (teks bebas) ke salah satu dari 6 nilai grup resmi.
+     *
+     * Pencocokan bersifat case-insensitive dan berbasis keyword, sehingga variasi
+     * penulisan pembimbing ('berkala', 'Berkala', 'Informasi Berkala', dst)
+     * tetap terpetakan dengan benar.
+     *
+     * Prioritas pencocokan (dari atas ke bawah, pertama cocok dipakai):
+     *   berkala            → 'Informasi Berkala'
+     *   serta merta        → 'Informasi Serta Merta'
+     *   setiap saat        → 'Informasi Setiap Saat'
+     *   dikecualikan       → 'Informasi Dikecualikan'
+     *   laporan akses      → 'Laporan Akses Informasi'
+     *   sakip / sakip-rb   → 'Lainnya'  (SAKIP punya halaman sendiri, bukan optgroup PPID)
+     *   semua lainnya      → 'Lainnya'
+     */
+    private function resolveGrup(string $klasifikasi): string
+    {
+        $k = strtolower(trim($klasifikasi));
+
+        if (str_contains($k, 'berkala'))         return 'Informasi Berkala';
+        if (str_contains($k, 'serta merta'))     return 'Informasi Serta Merta';
+        if (str_contains($k, 'setiap saat'))     return 'Informasi Setiap Saat';
+        if (str_contains($k, 'dikecualikan'))    return 'Informasi Dikecualikan';
+        if (str_contains($k, 'laporan akses'))   return 'Laporan Akses Informasi';
+
+        return 'Lainnya';
     }
 }

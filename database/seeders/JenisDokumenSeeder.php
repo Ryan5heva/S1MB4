@@ -33,7 +33,7 @@ class JenisDokumenSeeder extends Seeder
             ['id' => 9,  'jenis_dokumen' => 'Ketenagakerjaan',                                                                                  'status' => 1, 'klasifikasi' => 'Berkala', 'grup' => 'Informasi Berkala'],
             ['id' => 10, 'jenis_dokumen' => 'Prosedur Peringatan Dini dan Prosedur Evakuasi Keadaan Darurat',                                   'status' => 1, 'klasifikasi' => 'Berkala', 'grup' => 'Informasi Berkala'],
             ['id' => 11, 'jenis_dokumen' => 'SK PPID',                                                                                          'status' => 1, 'klasifikasi' => 'Dokumen', 'grup' => 'Lainnya'],
-            ['id' => 12, 'jenis_dokumen' => 'Daftar Informasi Publik',                                                                          'status' => 1, 'klasifikasi' => 'Dokumen', 'grup' => 'Informasi Setiap Saat'],
+            ['id' => 12, 'jenis_dokumen' => 'Daftar Informasi Publik',                                                                          'status' => 1, 'klasifikasi' => 'Dokumen', 'grup' => 'Lainnya'],
             ['id' => 13, 'jenis_dokumen' => 'Laporan SKM',                                                                                      'status' => 1, 'klasifikasi' => 'Dokumen', 'grup' => 'Lainnya'],
             ['id' => 14, 'jenis_dokumen' => 'SAKIP',                                                                                            'status' => 1, 'klasifikasi' => 'sakip',   'grup' => 'Lainnya'],
         ], uniqueBy: ['id'], update: ['jenis_dokumen', 'status', 'klasifikasi', 'grup']);
