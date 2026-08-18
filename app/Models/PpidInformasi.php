@@ -81,7 +81,16 @@ class PpidInformasi extends Model
     /** Scope: semua item Informasi Berkala (dikelompokkan berdasarkan jenis_dokumen) */
     public function scopeBerkala($query)
     {
-        return $query->where('jenis_menu', 'berkala');
+        return $query
+            ->where('jenis_menu', 'berkala')
+            ->where(function ($q) {
+                // Izinkan id_jenis_dokumen = NULL (data seeded lama belum punya relasi ke jenis_dokumen)
+                // Jika ada relasi, pastikan klasifikasinya memang 'Berkala' (case-insensitive)
+                $q->whereNull('id_jenis_dokumen')
+                  ->orWhereHas('jenisDokumen', fn ($jd) =>
+                      $jd->whereRaw("LOWER(klasifikasi) = 'berkala'")
+                  );
+            });
     }
 
     /** Scope: semua item Informasi Serta Merta */

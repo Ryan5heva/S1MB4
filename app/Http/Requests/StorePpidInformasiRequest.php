@@ -6,8 +6,9 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
 /**
- * Validasi untuk menambah data baru di PPID Informasi Berkala.
- * Kategori dipilih via dropdown (id_jenis_dokumen), bukan lagi hardcode ke Ketenagakerjaan.
+ * Validasi untuk menambah data baru di PPID Informasi.
+ * Mendukung semua kategori aktif dari tabel jenis_dokumen (Berkala, SAKIP, dll).
+ * Kategori dipilih via dropdown (id_jenis_dokumen).
  */
 class StorePpidInformasiRequest extends FormRequest
 {
@@ -19,12 +20,13 @@ class StorePpidInformasiRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // Wajib dari tabel jenis_dokumen dengan klasifikasi='Berkala'
-            // Validasi ini mencegah admin memilih kategori dari klasifikasi lain (Serta Merta, dll)
+            // Terima semua id dari tabel jenis_dokumen yang aktif (status = '1').
+            // Filter per klasifikasi (Berkala, SAKIP, dll) sudah ditangani di layer
+            // controller (index/create/edit) dan model scope (scopeBerkala, dll).
             'id_jenis_dokumen' => [
                 'required',
                 'integer',
-                Rule::exists('jenis_dokumen', 'id')->where('klasifikasi', 'Berkala'),
+                Rule::exists('jenis_dokumen', 'id')->where('status', '1'),
             ],
             'nama_informasi'   => ['required', 'string', 'max:255'],
             'deskripsi'        => ['nullable', 'string'],
@@ -56,7 +58,7 @@ class StorePpidInformasiRequest extends FormRequest
     {
         return [
             'id_jenis_dokumen.required' => 'Kategori wajib dipilih.',
-            'id_jenis_dokumen.exists'   => 'Kategori yang dipilih tidak valid.',
+            'id_jenis_dokumen.exists'   => 'Kategori yang dipilih tidak valid atau tidak aktif.',
             'nama_informasi.required'   => 'Nama informasi wajib diisi.',
             'tahun.integer'             => 'Tahun harus berupa angka.',
             'tahun.min'                 => 'Tahun tidak boleh kurang dari 2000.',
