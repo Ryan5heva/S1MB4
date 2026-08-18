@@ -148,6 +148,47 @@ class PpidPublicApiController extends Controller
     }
 
     /**
+     * GET /api/ppid/dokumen/{slug}
+     *
+     * Mengembalikan daftar item Dokumen PPID yang dipublish
+     * berdasarkan slug kategori.
+     *
+     * Slug → jenis_dokumen_id mapping:
+     *   sk-ppid               → id = 11 (SK PPID)
+     *   dip-bakorwil-1-madiun → id = 12 (Daftar Informasi Publik)
+     *   llid-bakorwil-1-madiun → dikonfigurasi setelah entry DB tersedia
+     *
+     * Hanya mengembalikan item berstatus 'publish'.
+     * Return 404 jika slug tidak dikenal atau belum dikonfigurasi.
+     *
+     * Response shape: flat array dari mapItem (tanpa field jenis_dokumen).
+     */
+    public function dokumen(string $slug): JsonResponse
+    {
+        // Peta slug → id_jenis_dokumen.
+        // Nilai null berarti slug dikenal tapi belum dikonfigurasi → 404.
+        // Tambahkan entri baru di sini setelah entry jenis_dokumen tersedia di DB.
+        $slugMap = [
+            'sk-ppid'                => 11,  // SK PPID
+            'dip-bakorwil-1-madiun'  => 12,  // Daftar Informasi Publik
+            // 'llid-bakorwil-1-madiun' => null,  // Tunggu ID dari admin panel
+        ];
+
+        if (! array_key_exists($slug, $slugMap) || $slugMap[$slug] === null) {
+            return response()->json(['message' => 'Kategori dokumen tidak ditemukan.'], 404);
+        }
+
+        $items = PpidInformasi::where('id_jenis_dokumen', $slugMap[$slug])
+            ->published()
+            ->orderBy('urutan')
+            ->orderBy('id')
+            ->get()
+            ->map(fn ($item) => $this->mapItem($item));
+
+        return response()->json($items);
+    }
+
+    /**
      * GET /api/ppid/klasifikasi
      *
      * Mengembalikan daftar klasifikasi PPID yang aktif untuk

@@ -32,6 +32,7 @@ Route::prefix('ppid')->group(function () {
     Route::get('/setiap-saat',            [PpidPublicApiController::class, 'setiapSaat']);
     Route::get('/dikecualikan',           [PpidPublicApiController::class, 'dikecualikan']);
     Route::get('/laporan-akses-informasi',[PpidPublicApiController::class, 'laporanAksesInformasi']);
+    Route::get('/dokumen/{slug}',         [PpidPublicApiController::class, 'dokumen']);
 });
 
 /*
