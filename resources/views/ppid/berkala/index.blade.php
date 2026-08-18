@@ -70,11 +70,27 @@
                     id="dropdownKategori"
                     class="kategori-select"
                     onchange="document.getElementById('formKategori').submit()">
-                @foreach($jenisDokumenList as $jd)
-                    <option value="{{ $jd->id }}"
-                        {{ $jenisDokumenAktif?->id == $jd->id ? 'selected' : '' }}>
-                        {{ $jd->jenis_dokumen }}
-                    </option>
+                @php
+                    // Urutan grup sesuai struktur klasifikasi resmi PPID
+                    $urutanGrup = [
+                        'Informasi Berkala',
+                        'Informasi Serta Merta',
+                        'Informasi Setiap Saat',
+                        'Informasi Dikecualikan',
+                        'Laporan Akses Informasi',
+                        'Lainnya',
+                    ];
+                    $grupTersedia = collect($urutanGrup)->filter(fn($g) => $grupKategori->has($g));
+                @endphp
+                @foreach($grupTersedia as $grupNama)
+                    <optgroup label="{{ $grupNama }}">
+                        @foreach($grupKategori[$grupNama] as $jd)
+                            <option value="{{ $jd->id }}"
+                                {{ $jenisDokumenAktif?->id == $jd->id ? 'selected' : '' }}>
+                                {{ $jd->jenis_dokumen }}
+                            </option>
+                        @endforeach
+                    </optgroup>
                 @endforeach
             </select>
         </form>

@@ -26,7 +26,10 @@ class PpidInformasiBerkalaController extends Controller
         // Tampilkan semua jenis dokumen aktif di dropdown (bukan hanya 'Berkala')
         // Kategori seperti SAKIP juga dikelola dari halaman ini, namun ditampilkan
         // di frontend sesuai klasifikasinya (mis. halaman /sakip-rb untuk SAKIP)
-        $jenisDokumenList = JenisDokumen::where('status', '1')->orderBy('klasifikasi')->orderBy('jenis_dokumen')->get();
+        $jenisDokumenList = JenisDokumen::where('status', '1')->orderBy('grup')->orderBy('jenis_dokumen')->get();
+
+        // Kelompokkan per grup untuk <optgroup> pada dropdown kategori
+        $grupKategori = $jenisDokumenList->groupBy('grup');
 
         // Tentukan id kategori aktif (dari query string atau default ke yang pertama)
         $defaultId        = $jenisDokumenList->first()?->id;
@@ -44,7 +47,7 @@ class PpidInformasiBerkalaController extends Controller
             ->orderBy('id')
             ->get();
 
-        return view('ppid.berkala.index', compact('jenisDokumenList', 'jenisDokumenAktif', 'items'));
+        return view('ppid.berkala.index', compact('jenisDokumenList', 'grupKategori', 'jenisDokumenAktif', 'items'));
     }
 
     /**
@@ -56,10 +59,13 @@ class PpidInformasiBerkalaController extends Controller
     public function create(Request $request): View
     {
         // Tampilkan semua jenis dokumen aktif — termasuk SAKIP dan lainnya
-        $jenisDokumenList = JenisDokumen::where('status', '1')->orderBy('klasifikasi')->orderBy('jenis_dokumen')->get();
+        $jenisDokumenList = JenisDokumen::where('status', '1')->orderBy('grup')->orderBy('jenis_dokumen')->get();
         $jenisDokumenId   = (int) $request->query('jenis_dokumen_id', $jenisDokumenList->first()?->id);
 
-        return view('ppid.berkala.create', compact('jenisDokumenList', 'jenisDokumenId'));
+        // Kelompokkan per grup untuk <optgroup> pada dropdown kategori
+        $grupKategori = $jenisDokumenList->groupBy('grup');
+
+        return view('ppid.berkala.create', compact('jenisDokumenList', 'grupKategori', 'jenisDokumenId'));
     }
 
     /**
@@ -118,9 +124,12 @@ class PpidInformasiBerkalaController extends Controller
     {
         $ppid->load(['user', 'jenisDokumen']);
         // Tampilkan semua jenis dokumen aktif — termasuk SAKIP dan lainnya
-        $jenisDokumenList = JenisDokumen::where('status', '1')->orderBy('klasifikasi')->orderBy('jenis_dokumen')->get();
+        $jenisDokumenList = JenisDokumen::where('status', '1')->orderBy('grup')->orderBy('jenis_dokumen')->get();
 
-        return view('ppid.berkala.edit', compact('ppid', 'jenisDokumenList'));
+        // Kelompokkan per grup untuk <optgroup> pada dropdown kategori
+        $grupKategori = $jenisDokumenList->groupBy('grup');
+
+        return view('ppid.berkala.edit', compact('ppid', 'jenisDokumenList', 'grupKategori'));
     }
 
     /**

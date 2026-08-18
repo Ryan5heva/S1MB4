@@ -61,12 +61,29 @@
                         class="form-input" required
                         onchange="toggleTahun(this.value)">
                     <option value="">— Pilih Kategori —</option>
-                    @foreach($jenisDokumenList as $jd)
-                        <option value="{{ $jd->id }}"
-                            data-klasifikasi="{{ $jd->klasifikasi }}"
-                            {{ (old('id_jenis_dokumen', $jenisDokumenId) == $jd->id) ? 'selected' : '' }}>
-                            {{ $jd->jenis_dokumen }}
-                        </option>
+                    @php
+                        // Urutan grup sesuai struktur klasifikasi resmi PPID
+                        $urutanGrup = [
+                            'Informasi Berkala',
+                            'Informasi Serta Merta',
+                            'Informasi Setiap Saat',
+                            'Informasi Dikecualikan',
+                            'Laporan Akses Informasi',
+                            'Lainnya',
+                        ];
+                        // Filter hanya grup yang memiliki data, pertahankan urutan
+                        $grupTersedia = collect($urutanGrup)->filter(fn($g) => $grupKategori->has($g));
+                    @endphp
+                    @foreach($grupTersedia as $grupNama)
+                        <optgroup label="{{ $grupNama }}">
+                            @foreach($grupKategori[$grupNama] as $jd)
+                                <option value="{{ $jd->id }}"
+                                    data-klasifikasi="{{ $jd->klasifikasi }}"
+                                    {{ (old('id_jenis_dokumen', $jenisDokumenId) == $jd->id) ? 'selected' : '' }}>
+                                    {{ $jd->jenis_dokumen }}
+                                </option>
+                            @endforeach
+                        </optgroup>
                     @endforeach
                 </select>
                 <p class="text-xs text-gray-400 mt-1">Pilih kategori PPID untuk data ini.</p>

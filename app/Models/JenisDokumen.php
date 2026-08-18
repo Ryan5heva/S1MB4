@@ -15,6 +15,7 @@ class JenisDokumen extends Model
         'jenis_dokumen',
         'status',
         'klasifikasi',
+        'grup',
     ];
 
     protected function casts(): array
