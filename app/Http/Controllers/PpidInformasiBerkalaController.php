@@ -70,6 +70,10 @@ class PpidInformasiBerkalaController extends Controller
 
     /**
      * Simpan item PPID baru ke database.
+     *
+     * kolom 'jenis_menu' di-derive secara otomatis dari kolom 'grup' jenis_dokumen
+     * yang dipilih, sehingga data langsung terhubung ke endpoint API yang sesuai
+     * (mis. Serta Merta → jenis_menu='serta_merta', bukan hardcode 'berkala').
      */
     public function store(StorePpidInformasiRequest $request): RedirectResponse
     {
@@ -80,17 +84,15 @@ class PpidInformasiBerkalaController extends Controller
             $filePath = $request->file('file')->store('ppid', 'public');
         }
 
-        // Tentukan jenis_menu berdasarkan klasifikasi jenis_dokumen yang dipilih.
-        // SAKIP dan kategori lain yang bukan 'berkala' tetap disimpan dengan
-        // jenis_menu='berkala' (enum constraint) — halaman publik SAKIP sudah
-        // membaca via id_jenis_dokumen, bukan jenis_menu, sehingga tetap terpisah.
-        // Jenis menu yang memiliki enum tersendiri (serta_merta, setiap_saat, dll)
-        // tetap diatur via halaman admin masing-masing, bukan via form ini.
         $jenisDokumen = JenisDokumen::find($validated['id_jenis_dokumen']);
         $kategoriNama = $jenisDokumen?->jenis_dokumen ?? '-';
 
+        // Derive jenis_menu dari grup jenis_dokumen agar data masuk ke endpoint API
+        // yang benar (berkala, serta_merta, setiap_saat, dikecualikan, dll).
+        $jenisMenu = $this->resolveJenisMenu($jenisDokumen?->grup);
+
         $item = PpidInformasi::create([
-            'jenis_menu'       => 'berkala',
+            'jenis_menu'       => $jenisMenu,
             'id_jenis_dokumen' => $validated['id_jenis_dokumen'],
             'nama_informasi'   => $validated['nama_informasi'],
             'deskripsi'        => $validated['deskripsi'] ?? null,
@@ -107,7 +109,7 @@ class PpidInformasiBerkalaController extends Controller
 
         ActivityLog::catat(
             'Tambah Data',
-            'Menambahkan PPID Informasi Berkala (' . $kategoriNama . '): "' . $validated['nama_informasi'] . '".'
+            'Menambahkan PPID (' . $kategoriNama . '): "' . $validated['nama_informasi'] . '".'
         );
 
         return redirect()
@@ -133,10 +135,11 @@ class PpidInformasiBerkalaController extends Controller
     }
 
     /**
-     * Update dokumen/link pada baris Informasi Berkala.
+     * Update dokumen/link pada item PPID.
      *
-     * Yang boleh diubah: deskripsi, jenis, file, url, status, urutan, tahun, published_at.
-     * Yang TIDAK boleh diubah: nama_informasi, id_jenis_dokumen (jika fixed), jenis_menu, is_fixed.
+     * Selain field konten, jenis_menu juga di-sync ulang dari grup jenis_dokumen
+     * saat ini — sehingga jika admin pernah salah kategori, data otomatis terkoreksi
+     * setelah di-save.
      */
     public function update(UpdatePpidInformasiRequest $request, PpidInformasi $ppid): RedirectResponse
     {
@@ -160,7 +163,12 @@ class PpidInformasiBerkalaController extends Controller
             $filePath = null;
         }
 
+        // Sync jenis_menu dari grup jenis_dokumen aktif
+        $jenisDokumen = $ppid->jenisDokumen;
+        $jenisMenu    = $this->resolveJenisMenu($jenisDokumen?->grup);
+
         $ppid->update([
+            'jenis_menu'   => $jenisMenu,
             'deskripsi'    => $validated['deskripsi'] ?? null,
             'jenis'        => $validated['jenis'],
             'file'         => $filePath,
@@ -174,7 +182,7 @@ class PpidInformasiBerkalaController extends Controller
 
         ActivityLog::catat(
             'Edit Data',
-            'Mengubah dokumen PPID Informasi Berkala: "' . $ppid->nama_informasi . '".'
+            'Mengubah dokumen PPID: "' . $ppid->nama_informasi . '".'
         );
 
         $jenisDokumenId = $ppid->id_jenis_dokumen;
@@ -252,5 +260,35 @@ class PpidInformasiBerkalaController extends Controller
             ]);
 
         return response()->json($items);
+    }
+
+    // -------------------------------------------------------------------------
+    // Private helpers
+    // -------------------------------------------------------------------------
+
+    /**
+     * Petakan nilai kolom 'grup' dari jenis_dokumen ke nilai ENUM jenis_menu
+     * yang benar di tabel ppid_informasi.
+     *
+     * Pemetaan:
+     *   'Informasi Berkala'       → 'berkala'
+     *   'Informasi Serta Merta'   → 'serta_merta'
+     *   'Informasi Setiap Saat'   → 'setiap_saat'
+     *   'Informasi Dikecualikan'  → 'dikecualikan'
+     *   'Laporan Akses Informasi' → 'laporan_akses_informasi'
+     *   null / 'Lainnya' / lain  → 'berkala'  (fallback aman)
+     *
+     * @param  string|null  $grup  Nilai kolom 'grup' dari jenis_dokumen
+     */
+    private function resolveJenisMenu(?string $grup): string
+    {
+        return match ($grup) {
+            'Informasi Berkala'       => 'berkala',
+            'Informasi Serta Merta'   => 'serta_merta',
+            'Informasi Setiap Saat'   => 'setiap_saat',
+            'Informasi Dikecualikan'  => 'dikecualikan',
+            'Laporan Akses Informasi' => 'laporan_akses_informasi',
+            default                   => 'berkala',
+        };
     }
 }

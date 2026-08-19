@@ -85,10 +85,11 @@ class PpidInformasi extends Model
             ->where('jenis_menu', 'berkala')
             ->where(function ($q) {
                 // Izinkan id_jenis_dokumen = NULL (data seeded lama belum punya relasi ke jenis_dokumen)
-                // Jika ada relasi, pastikan klasifikasinya memang 'Berkala' (case-insensitive)
+                // Jika ada relasi, pastikan klasifikasinya mengandung kata 'berkala' (case-insensitive).
+                // LIKE dipakai agar variasi seperti 'Berkala', 'Informasi Berkala', dsb. semua lolos.
                 $q->whereNull('id_jenis_dokumen')
                   ->orWhereHas('jenisDokumen', fn ($jd) =>
-                      $jd->whereRaw("LOWER(klasifikasi) = 'berkala'")
+                      $jd->whereRaw("LOWER(klasifikasi) LIKE '%berkala%'")
                   );
             });
     }

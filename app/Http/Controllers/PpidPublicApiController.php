@@ -91,8 +91,10 @@ class PpidPublicApiController extends Controller
             ->orderBy('urutan')
             ->get();
 
-        // Group by kategori, urutan sesuai KATEGORI_ORDER_SETIAP_SAAT
-        $grouped = $raw->groupBy('kategori');
+        // Group by kategori, urutan sesuai KATEGORI_ORDER_SETIAP_SAAT.
+        // ->toBase() mengonversi Eloquent Collection ke Support Collection agar
+        // ->except(array_of_strings) bekerja dengan string key, bukan primary key.
+        $grouped = $raw->toBase()->groupBy('kategori');
 
         $sections = collect(PpidInformasi::KATEGORI_ORDER_SETIAP_SAAT)
             ->filter(fn ($k) => $grouped->has($k))
