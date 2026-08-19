@@ -78,6 +78,7 @@
                         'Informasi Setiap Saat',
                         'Informasi Dikecualikan',
                         'Laporan Akses Informasi',
+                        'Dokumen PPID',
                         'Lainnya',
                     ];
                     $grupTersedia = collect($urutanGrup)->filter(fn($g) => $grupKategori->has($g));

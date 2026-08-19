@@ -156,9 +156,9 @@ class PpidPublicApiController extends Controller
      * berdasarkan slug kategori.
      *
      * Slug → jenis_dokumen_id mapping:
-     *   sk-ppid               → id = 11 (SK PPID)
-     *   dip-bakorwil-1-madiun → id = 12 (Daftar Informasi Publik)
-     *   llid-bakorwil-1-madiun → dikonfigurasi setelah entry DB tersedia
+     *   sk-ppid                → id = 11 (SK PPID)
+     *   dip-bakorwil-1-madiun  → id = 21 (DIP Bakorwil I Madiun)
+     *   llid-bakorwil-1-madiun → id = 20 (LLID Bakorwil I Madiun)
      *
      * Hanya mengembalikan item berstatus 'publish'.
      * Return 404 jika slug tidak dikenal atau belum dikonfigurasi.
@@ -172,8 +172,8 @@ class PpidPublicApiController extends Controller
         // Tambahkan entri baru di sini setelah entry jenis_dokumen tersedia di DB.
         $slugMap = [
             'sk-ppid'                => 11,  // SK PPID
-            'dip-bakorwil-1-madiun'  => 12,  // Daftar Informasi Publik
-            // 'llid-bakorwil-1-madiun' => null,  // Tunggu ID dari admin panel
+            'dip-bakorwil-1-madiun'  => 21,  // DIP Bakorwil I Madiun
+            'llid-bakorwil-1-madiun' => 20,  // LLID Bakorwil I Madiun
         ];
 
         if (! array_key_exists($slug, $slugMap) || $slugMap[$slug] === null) {

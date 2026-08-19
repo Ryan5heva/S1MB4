@@ -69,6 +69,7 @@
                             'Informasi Setiap Saat',
                             'Informasi Dikecualikan',
                             'Laporan Akses Informasi',
+                            'Dokumen PPID',
                             'Lainnya',
                         ];
                         // Filter hanya grup yang memiliki data, pertahankan urutan
