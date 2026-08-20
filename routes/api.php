@@ -6,6 +6,7 @@ use App\Http\Controllers\PpidPublicApiController;
 use App\Http\Controllers\BeritaPublicApiController;
 use App\Http\Controllers\SliderPublicApiController;
 use App\Http\Controllers\SakipRbPublicApiController;
+use App\Http\Controllers\VideoPublicApiController;
 
 /*
 |--------------------------------------------------------------------------
@@ -51,6 +52,13 @@ Route::prefix('berita')->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::get('/sliders', [SliderPublicApiController::class, 'index']);
+
+/*
+|--------------------------------------------------------------------------
+| API Routes — Video Publik (tanpa autentikasi)
+|--------------------------------------------------------------------------
+*/
+Route::get('/videos', [VideoPublicApiController::class, 'index']);
 
 /*
 |--------------------------------------------------------------------------
